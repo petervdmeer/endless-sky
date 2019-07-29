@@ -63,6 +63,10 @@ public:
 	static void Write(const std::string &path, const std::string &data);
 	static void Write(FILE *file, const std::string &data);
 	
+	// Archive downloads and management
+	static bool DownloadFile(const std::string &url, const std::string &destinationFile);
+	static bool Unpack(const std::string &archive, const std::string &destinationPath);
+	
 	static void LogError(const std::string &message);
 };
 

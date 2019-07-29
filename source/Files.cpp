@@ -14,7 +14,10 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
 #include "File.h"
 
+#include <curl/curl.h>
 #include <SDL2/SDL.h>
+#include <zip.h>
+// See https://stackoverflow.com/questions/35347099/unzipping-a-file-to-disk-using-libzip
 
 #if defined _WIN32
 #include <windows.h>
@@ -79,6 +82,10 @@ namespace {
 		return result;
 	}
 #endif
+	size_t writeDownloadedData(void *buffer, size_t size, size_t nmemb, FILE *ofile)
+	{
+		return fwrite(buffer, size, nmemb, ofile);
+	}
 }
 
 
@@ -535,6 +542,102 @@ void Files::Write(FILE *file, const string &data)
 		return;
 	
 	fwrite(&data[0], 1, data.size(), file);
+}
+
+
+
+bool Files::DownloadFile(const std::string &url, const std::string &destinationFile)
+{
+	if(url.empty())
+		return false;
+	
+	if(Files::Exists(destinationFile))
+		return false;
+	
+	File destFilePtr = File(destinationFile, true);
+	if(!destFilePtr)
+		return false;
+		
+	FILE *destFp = destFilePtr;
+	
+	CURL *curlDl = curl_easy_init();
+	if(!curlDl)
+		return false;
+	
+	curl_easy_setopt(curlDl, CURLOPT_URL, url.c_str());
+	curl_easy_setopt(curlDl, CURLOPT_WRITEDATA, destFp);
+	
+	// Linux can use a built-in function, but this function appears to be needed in Microsoft Windows environments
+	curl_easy_setopt(curlDl, CURLOPT_WRITEFUNCTION, writeDownloadedData);
+	
+	// Allow redirects. For example for downloads from Github
+	curl_easy_setopt(curlDl, CURLOPT_FOLLOWLOCATION, 1L);
+	
+	CURLcode result = curl_easy_perform(curlDl);
+	curl_easy_cleanup(curlDl);
+	
+	return result == CURLE_OK && Files::Exists(destinationFile);
+}
+
+
+
+bool Files::Unpack(const std::string &archive, const std::string &destinationPath)
+{
+	if(!Files::Exists(archive))
+		return false;
+	
+	if(!Files::Exists(destinationPath))
+		return false;
+	
+	int zipError = 0;
+	
+	struct zip *archivePtr = zip_open(archive.c_str(), 0, &zipError);
+	if(!archivePtr)
+		return false;
+	
+	for(int i = 0; i < zip_get_num_entries(archivePtr, 0); i++)
+	{
+		struct zip_stat zippedStat;
+		if(zip_stat_index(archivePtr, i, 0, &zippedStat))
+			continue;
+		
+		string zippedName = string(zippedStat.name);
+		
+		size_t dirSep = zippedName.find_last_of("/\\");
+		// Skip directory entries
+		if(dirSep == zippedName.length() - 1)
+			continue;
+		
+		string zippedPath = zippedName.substr(0, dirSep);
+		// TODO: create directories here...
+		
+		File outFile = File(destinationPath + zippedName, true);
+		if(!outFile)
+			continue;
+		FILE *outFileP = outFile;
+
+		struct zip_file *zippedFile = zip_fopen_index(archivePtr, i, 0);
+		if(!zippedFile)
+			continue;
+			
+		size_t written = 0;
+		while(written < zippedStat.size)
+		{
+			// Reading 10k at a time.
+			char buffer[10000];
+			size_t len = zip_fread(zippedFile, buffer, sizeof(buffer));
+			if(len <= 0)
+				return false;
+			
+			fwrite(buffer, sizeof(char), len, outFileP);
+			written += len;
+		}
+		zip_fclose(zippedFile);
+	}
+	if(zip_close(archivePtr) < 0)
+		return false;
+	
+	return true;
 }
 
 
