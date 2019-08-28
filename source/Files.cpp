@@ -17,7 +17,6 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 #include <curl/curl.h>
 #include <SDL2/SDL.h>
 #include <zip.h>
-// See https://stackoverflow.com/questions/35347099/unzipping-a-file-to-disk-using-libzip
 
 #if defined _WIN32
 #include <windows.h>
@@ -546,12 +545,12 @@ void Files::Write(FILE *file, const string &data)
 
 
 
-bool Files::DownloadFile(const std::string &url, const std::string &destinationFile)
+bool Files::DownloadFile(const string &url, const string &destinationFile)
 {
 	if(url.empty())
 		return false;
 	
-	if(Files::Exists(destinationFile))
+	if(Exists(destinationFile))
 		return false;
 	
 	File destFilePtr = File(destinationFile, true);
@@ -576,17 +575,17 @@ bool Files::DownloadFile(const std::string &url, const std::string &destinationF
 	CURLcode result = curl_easy_perform(curlDl);
 	curl_easy_cleanup(curlDl);
 	
-	return result == CURLE_OK && Files::Exists(destinationFile);
+	return result == CURLE_OK && Exists(destinationFile);
 }
 
 
 
-bool Files::Unpack(const std::string &archive, const std::string &destinationPath)
+bool Files::Unpack(const string &archive, const string &destinationPath)
 {
-	if(!Files::Exists(archive))
+	if(!Exists(archive))
 		return false;
 	
-	if(!Files::Exists(destinationPath))
+	if(!Exists(destinationPath))
 		return false;
 	
 	int zipError = 0;
