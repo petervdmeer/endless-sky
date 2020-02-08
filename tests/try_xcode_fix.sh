@@ -45,16 +45,10 @@ do
 		if [ $? -ne 0 ]
 		then
 			echo "Error: file ${FILE} not added to XCode project"
-			echo "Files and directories present in top-level dir:"
-			ls
-			echo ""
-			echo "Files and directories present in EndlessSky.xcodeproj:"
-			ls EndlessSky.xcodeproj
-			echo ""
 			echo "Git status:"
 			git status
 			echo ""
-			#exit 1
+			exit 1
 		fi
 		NUM_ADDED=$(( NUM_ADDED + 1 ))
 	fi
