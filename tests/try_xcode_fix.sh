@@ -51,6 +51,9 @@ do
 			echo "Files and directories present in EndlessSky.xcodeproj:"
 			ls EndlessSky.xcodeproj
 			echo ""
+			echo "Git status:"
+			git status
+			echo ""
 			#exit 1
 		fi
 		NUM_ADDED=$(( NUM_ADDED + 1 ))
