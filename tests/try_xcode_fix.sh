@@ -48,6 +48,8 @@ do
 			echo "Git status:"
 			git status
 			echo ""
+			echo "Diff (between project and backup)"
+			diff EndlessSky.xcodeproj/project.pbxproj EndlessSky.xcodeproj/project.pbxprojback
 			exit 1
 		fi
 		NUM_ADDED=$(( NUM_ADDED + 1 ))
