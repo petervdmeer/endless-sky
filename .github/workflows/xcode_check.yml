@@ -21,4 +21,4 @@ jobs:
         pip3 install pbxproj
     - name: Execute xcode completeness check
       run: |
-        ./tests/try_xcode_fix.sh
+        ./tests/check_xcode.sh
