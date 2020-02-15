@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# Script that checks if the XCode (MacOS) project is complete.
+# If the XCode project is incomplete, then this script also uses
+# mod-pbxproj (https://github.com/kronenthaler/mod-pbxproj) to
+# suggest fixes/additions to make the XCode project complete.
+#
+# pbxproj should already have been installed (through PIP) before
+# running this script.
+
+
 # Determine path of the current script
 HERE=$(cd `dirname $0` && pwd)
 
@@ -20,13 +29,8 @@ do
 	cat EndlessSky.xcodeproj/project.pbxproj | grep "$FILE" > /dev/null
 	if [ $? -ne 0 ] && [ "$FILE" != "WinApp.rc" ]
 	then
-		# pbxproj should already have been installed (through PIP)
-		# Information: https://github.com/kronenthaler/mod-pbxproj
-		echo "File $FILE is missing from XCode-project"
-		echo "Trying to add the file using:"
-		python3 -m pbxproj --version
+		echo "File $FILE is missing from XCode-project, trying to add the file."
 		python3 -m pbxproj file ${XPROJECT} "../source/${FILE}" --tree="<group>"
-		RESULT=$?
 		echo "Project to add file to XCode project ran with result $?"
 		# Check if the requested file was added
 		cat ${XPROJECT}/project.pbxproj | grep "$FILE" > /dev/null
