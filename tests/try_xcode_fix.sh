@@ -24,7 +24,7 @@ do
 		echo "File $FILE is missing from XCode-project"
 		echo "Trying to add the file using:"
 		python -m pbxproj --version
-		python -m pbxproj ${XPROJECT} "../source/${FILE}"
+		python -m pbxproj file ${XPROJECT} "../source/${FILE}"
 		RESULT=$?
 		echo "Project to add file to XCode project ran with result $?"
 		# Check if the requested file was added
