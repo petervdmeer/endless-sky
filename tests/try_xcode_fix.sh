@@ -8,6 +8,7 @@ cd ${HERE}
 cd ..
 
 ESTOP=$(pwd)
+XPROJECT=${ESTOP}/EndlessSky.xcodeproj
 
 echo "script-dir: ${HERE}"
 echo "es-top-dir: ${ESTOP}"
@@ -19,27 +20,11 @@ do
 	cat EndlessSky.xcodeproj/project.pbxproj | grep "$FILE" > /dev/null
 	if [ $? -ne 0 ] && [ "$FILE" != "WinApp.rc" ]
 	then
-		echo "File $FILE is missing from XCode-project"
-		if [ ! -d Xcode-Proj-Adder ]
-		then
-			echo "Cloning Xcode-Proj-Adder project"
-			git clone https://github.com/zackslash/Xcode-Proj-Adder.git
-			if [ $? -ne 0 ]
-			then
-				echo "Error: Cloning failed"
-				exit 1
-			fi
-			if [ ! -f ./Xcode-Proj-Adder/bin/XcodeProjAdder ]
-			then
-				echo "Error: Xcode-adder missing"
-				exit 1
-			fi
-		fi
-		# Run XcodeProjAdder and print exit-code.
-		./Xcode-Proj-Adder/bin/XcodeProjAdder \
-			-XCP ${ESTOP}/EndlessSky.xcodeproj \
-			-SCSV "../source/${FILE}"
-		echo "XcodeProjAdder ran with result $?"
+		echo "File $FILE is missing from XCode-project, will try to add the file."
+		# pbxproj should already have been installed (through PIP)
+		python -m pbxproj ${XPROJECT} "../source/${FILE}"
+		RESULT=$?
+		echo "Project to add file to XCode project ran with result $?"
 		# Check if the requested file was added
 		cat EndlessSky.xcodeproj/project.pbxproj | grep "$FILE" > /dev/null
 		if [ $? -ne 0 ]
@@ -48,8 +33,8 @@ do
 			echo "Git status:"
 			git status
 			echo ""
-			echo "Diff (between project and backup)"
-			diff EndlessSky.xcodeproj/project.pbxproj EndlessSky.xcodeproj/project.pbxprojback
+			echo "Diff (between project and checked-in version)"
+			git diff EndlessSky.xcodeproj/project.pbxproj
 			exit 1
 		fi
 		NUM_ADDED=$(( NUM_ADDED + 1 ))
@@ -59,8 +44,10 @@ done
 if [ ${NUM_ADDED} -gt 0 ]
 then
 	echo "You should add ${NUM_ADDED} files"
-	echo "An example of the project file after adding the missing files:"
+	echo "Example of the diff to apply:"
 	echo ""
-	cat EndlessSky.xcodeproj/project.pbxproj
+	git diff EndlessSky.xcodeproj/project.pbxproj
 	echo ""
+	exit 1
 fi
+exit 0
