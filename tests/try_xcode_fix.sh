@@ -21,10 +21,11 @@ do
 	if [ $? -ne 0 ] && [ "$FILE" != "WinApp.rc" ]
 	then
 		# pbxproj should already have been installed (through PIP)
+		# Information: https://github.com/kronenthaler/mod-pbxproj
 		echo "File $FILE is missing from XCode-project"
 		echo "Trying to add the file using:"
-		python -m pbxproj --version
-		python -m pbxproj file ${XPROJECT} "../source/${FILE}"
+		python3 -m pbxproj --version
+		python3 -m pbxproj file ${XPROJECT} "../source/${FILE}" --tree="<group>"
 		RESULT=$?
 		echo "Project to add file to XCode project ran with result $?"
 		# Check if the requested file was added
