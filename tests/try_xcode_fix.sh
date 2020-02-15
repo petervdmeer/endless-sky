@@ -20,13 +20,15 @@ do
 	cat EndlessSky.xcodeproj/project.pbxproj | grep "$FILE" > /dev/null
 	if [ $? -ne 0 ] && [ "$FILE" != "WinApp.rc" ]
 	then
-		echo "File $FILE is missing from XCode-project, will try to add the file."
 		# pbxproj should already have been installed (through PIP)
+		echo "File $FILE is missing from XCode-project"
+		echo "Trying to add the file using:"
+		python -m pbxproj --version
 		python -m pbxproj ${XPROJECT} "../source/${FILE}"
 		RESULT=$?
 		echo "Project to add file to XCode project ran with result $?"
 		# Check if the requested file was added
-		cat EndlessSky.xcodeproj/project.pbxproj | grep "$FILE" > /dev/null
+		cat ${XPROJECT}/project.pbxproj | grep "$FILE" > /dev/null
 		if [ $? -ne 0 ]
 		then
 			echo "Error: file ${FILE} not added to XCode project"
