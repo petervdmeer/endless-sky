@@ -1319,17 +1319,40 @@ void AI::MoveInFormation(Ship &ship, Command &command)
 	
 	// Aggresively try to match the position and velocity for the formation position.
 	static const double POSITION_DEADBAND = 50.;
-	static const double VELOCITY_DEADBAND = 0.1;
-	bool inPosition = MoveTo(ship, command, it->second.NextPosition(), formationLead->Velocity(), POSITION_DEADBAND, VELOCITY_DEADBAND);
+	static const double VELOCITY_DEADBAND = .5;
+	Point formationPosition = it->second.NextPosition();
+	Point formationVelocity = formationLead->Velocity();
+	bool inPosition = MoveTo(ship, command, formationPosition, formationVelocity, POSITION_DEADBAND, VELOCITY_DEADBAND);
 	
-	// If we match the position and velocity, then also match the facing angle.
-	if(inPosition)
+	// If the ship is actively moving, then we are done at this point.
+	if(!inPosition || ship.IsThrusting())
+		return;
+	
+	// If we match the position and velocity, then also match the facing angle of the leadship.
+	double facingDelta = formationLead->Facing().Degrees() - ship.Facing().Degrees();
+	if(abs(facingDelta) > 180.)
+		facingDelta += (facingDelta < 0. ? 360. : -360.);
+	command.SetTurn(facingDelta);
+	
+	Point positionDelta = formationPosition - ship.Position();
+	Point velocityDelta = formationVelocity - ship.Velocity();
+	
+	// Ships slowly drift away from their positions, resulting in ships frequently rotating to correct their positions.
+	// Determine if the ship is moving towards the desired relative position or away from it.
+	double correctAngle = (Angle(positionDelta).Degrees() - Angle(velocityDelta).Degrees());
+	if(abs(correctAngle) > 180.)
+		correctAngle += (correctAngle < 0. ? 360. : -360.);
+	bool isCorrecting = abs(correctAngle) > 120;
+	
+	// If the current velocity does not help for position keeping, then introduce a little
+	// bit of force to avoid continuous position corrections.
+	// Apply a little bit of force towards the desired position to reduce the frequency of those rotations/corrections.
+	static const double POSITIONING_FORCE = .05;
+	double formationVelocityLength = formationVelocity.Length();
+	if(formationVelocityLength >= 0.1 && !isCorrecting)
 	{
-		double facingDelta = formationLead->Facing().Degrees() - ship.Facing().Degrees();
-		if(abs(facingDelta) > 180.)
-			facingDelta += (facingDelta < 0. ? 360. : -360.);
-		
-		command.SetTurn(facingDelta);
+		// Apply force lineairly, less force the closer the ship is to its desired position.
+		ship.ApplyForce(positionDelta.Unit() * ship.Acceleration() * ship.Mass() * POSITIONING_FORCE * (min(positionDelta.Length(), POSITION_DEADBAND)/POSITION_DEADBAND));
 	}
 }
 
