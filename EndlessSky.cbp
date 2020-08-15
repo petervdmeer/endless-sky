@@ -112,6 +112,10 @@
 		<Unit filename="source/Command.h" />
 		<Unit filename="source/ConditionSet.cpp" />
 		<Unit filename="source/ConditionSet.h" />
+		<Unit filename="source/ConditionsProvider.cpp" />
+		<Unit filename="source/ConditionsProvider.h" />
+		<Unit filename="source/ConditionsProviderFull.cpp" />
+		<Unit filename="source/ConditionsProviderFull.h" />
 		<Unit filename="source/Conversation.cpp" />
 		<Unit filename="source/Conversation.h" />
 		<Unit filename="source/ConversationPanel.cpp" />

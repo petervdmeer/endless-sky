@@ -15,6 +15,7 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
 #include "Account.h"
 #include "CargoHold.h"
+#include "ConditionsProvider.h"
 #include "DataNode.h"
 #include "Date.h"
 #include "Depreciation.h"
@@ -47,7 +48,7 @@ class UI;
 // back in exactly the same state later. This includes what changes the player
 // has made to the universe, what jobs are being offered to them right now,
 // and what their current travel plan is, if any.
-class PlayerInfo {
+class PlayerInfo : public ConditionsProvider {
 public:
 	PlayerInfo() = default;
 	
@@ -179,17 +180,17 @@ public:
 	void HandleEvent(const ShipEvent &event, UI *ui);
 	
 	// Access the "condition" flags for this player.
-	int64_t GetCondition(const std::string &name) const;
+	virtual int64_t GetCondition(const std::string &name) const override;
 	// Copy conditions matching the prefix into the given map.
-	void GetConditions(std::map<std::string, int64_t> &targetMap, const std::string &prefix) const;
+	virtual void GetConditions(std::map<std::string, int64_t> &targetMap, const std::string &prefix) const override;
 	// Retrieve a sum (addition) of all "condition" flags starting with the
 	// given prefix.
-	int64_t GetConditionSum(const std::string &prefix) const;
+	virtual int64_t GetConditionSum(const std::string &prefix) const override;
 	// Set a "condition" flag to the given value. Returns true on success,
 	// false on failure.
-	bool SetCondition(const std::string &name, int64_t value);
-	bool AddCondition(const std::string &name, int64_t value);
-	bool EraseCondition(const std::string &name);
+	virtual bool SetCondition(const std::string &name, int64_t value) override;
+	virtual bool AddCondition(const std::string &name, int64_t value) override;
+	virtual bool EraseCondition(const std::string &name) override;
 	// Direct access to "condition" flags data.
 	std::map<std::string, int64_t> &Conditions();
 	const std::map<std::string, int64_t> &Conditions() const;
