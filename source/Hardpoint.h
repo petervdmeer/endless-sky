@@ -29,6 +29,65 @@ class Visual;
 // which may or may not have a weapon installed.
 class Hardpoint {
 public:
+	// Tracking mode (for turrets).
+	// TODO: Just do a PR with only tracking (no Triggering and FireGroups)
+	enum Tracking {FOCUSSED, OPPORTUNISTIC};
+	
+	// Triggering mode (for guns and turrets)
+	// - Manual: The weapon fires whenever the manual trigger is active.
+	// - Gated: The weapon fires whenever the manual trigger is active and it can hit any enemy.
+	// - Auto: The weapon fires whenever it can hit any enemy or when the manual trigger is active.
+	enum Triggering {MANUAL, GATED, AUTO};
+	
+	// Combinations:
+	// ------------- | ---------- | ------------- |
+	// Tracking      | Triggering | Combo name    | Combo art
+	// ------------- | ---------- | ------------- |
+	// FOCUSSED      | MANUAL     | FOCUSSED      | Scope sight
+	// FOCUSSED      | GATED      | GATED         | Scope sight with target
+	// FOCUSSED      | AUTO       | DIRECTED      | Scope sight with target and chip housing
+	// OPPORTUNISTIC | MANUAL     | OPPORTUNISTIC | 'Waaier'
+	// OPPORTUNISTIC | GATED      | SEMI-AUTO     | 'Waaier with target'
+	// OPPORTUNISTIC | AUTO       | FULL-AUTO     | 'Waaier with target and chip housing'
+	
+	
+	// Fire triggering mode (for all weapon types), determines tracking and when the weapon in the hardpoint fires.
+	// - Triggered; tracks the pilots selected target and fires when relevant trigger is active.
+	// - Focussed; tracks the pilots main target and fires when the pilot presses the trigger.
+	// - Gated; focusses on nearby targets and fires when relevant trigger is active and it has a possibility to hit any target.
+	// - Directed; tracks the pilots selected target and fires when it has the possiblity to hit any hostile target.
+	// - Opportunistic; tracks targets independently and fires when it has the possibility to hit any hostile target.
+	
+	// Manual  | Target       | Target      | Mode name
+	// gating  | tracking     | gating      | 
+	// ------- |---------     |------------ | -------------
+	// trigger | selected     | no          | TRIGGERED
+	// trigger | selected     | any         | FOCUSSED
+	// trigger | any          | any         | GATED
+	// no      | selected     | any         | DIRECTED
+	// no      | any          | any         | OPPORTUNISTIC
+	
+	enum Triggering {TRIGGERED, FOCUSSED, GATED, DIRECTED, OPPORTUNISTIC};
+	
+	// Triggering group, bitmask that describes the various groups.
+	// - All weapons in group 0 are triggered by the primary firing key.
+	// - All weapons in group 1 and higher are triggered by the secondary firing key.
+	// - The secondary select key selects which of the secondary groups is triggered by the secondary firing key.
+	// TODO: move triggering group to UI screen (and per weapon type instead of per hardpoint)
+	uint64_t GetTriggerGroups();
+	void AddTriggerGroups(uint64_t);
+	void RemoveTriggerGroups(uint64_t);
+	
+	// Get and set the triggering mode.
+	Triggering GetTriggering() const;
+	void SetTriggering(Triggering mode);
+	
+	// Get and set the tracking mode (for turret hardpoints).
+	Tracking GetTracking() const;
+	void SetTracking(Tracking mode);
+
+
+public:
 	// Constructor. Hardpoints may or may not specify what weapon is in them.
 	Hardpoint(const Point &point, const Angle &baseAngle, bool isTurret, bool isParallel, const Outfit *outfit = nullptr);
 	
@@ -95,6 +154,12 @@ private:
 	bool isTurret = false;
 	// Indicates if this hardpoint disallows converging (guns only).
 	bool isParallel = false;
+	
+	// Tracking and triggering mode for the weapon in this hardpoint.
+	Tracking tracking = Tracking::FOCUSSED;
+	Triggering triggering = Triggering::DIRECT;
+	// Bitmask of the groups that trigger the weapon in this hardpoint.
+	uint64_t triggerGroups;
 	
 	// Angle adjustment for convergence.
 	Angle angle;
