@@ -9,3 +9,23 @@ Endless Sky is distributed in the hope that it will be useful, but WITHOUT ANY
 WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 */
+
+#include "ConditionsStore.h"
+
+using namespace std;
+
+
+
+// Get mutable access to the local (non-forwarded) conditions of this store.
+map<string, int64_t> &ConditionsStore::Locals()
+{
+	return conditions;
+}
+
+
+
+// Access the local (non-forwarded) conditions of this store.
+const map<string, int64_t> &ConditionsStore::Locals() const
+{
+	return conditions;
+}

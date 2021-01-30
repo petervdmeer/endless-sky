@@ -40,6 +40,11 @@ public:
 	virtual bool AddCondition(const std::string &name, int64_t value) override;
 	virtual bool SetCondition(const std::string &name, int64_t value) override;
 	virtual bool EraseCondition(const std::string &name) override;
+	
+	// Direct access to non-forwarded (local to this class) "condition" flags data.
+	std::map<std::string, int64_t> &Locals();
+	const std::map<std::string, int64_t> &Locals() const;
+	
 protected:
 	// Storage for the actual conditions.
 	std::map<std::string, int64_t> conditions;
