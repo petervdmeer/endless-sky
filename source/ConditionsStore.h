@@ -26,7 +26,7 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 // as is done in this class.
 // Classes that want to store conditions differently than that is done in
 // this class should inherit from ConditionsProvider.
-class ConditionsProviderFull : public ConditionsProvider {
+class ConditionsStore : public ConditionsProvider {
 public:
 	// Retrieve a "condition" flag from this provider.
 	virtual int64_t GetCondition(const std::string &name) const override;
