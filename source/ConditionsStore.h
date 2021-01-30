@@ -10,8 +10,8 @@ WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 */
 
-#ifndef CONDITIONS_PROVIDER_FULL_H_
-#define CONDITIONS_PROVIDER_FULL_H_
+#ifndef CONDITIONS_STORE_H_
+#define CONDITIONS_STORE_H_
 
 #include "ConditionsProvider.h"
 
