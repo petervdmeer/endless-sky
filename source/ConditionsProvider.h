@@ -13,7 +13,6 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 #ifndef CONDITIONS_PROVIDER_H_
 #define CONDITIONS_PROVIDER_H_
 
-#include <iterator>
 #include <map>
 #include <string>
 
@@ -24,23 +23,6 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 // variables.
 class ConditionsProvider {
 public:
-	class Iterator {
-	public:
-		// Constructor to construct from other iterator.
-		Iterator(const Iterator& other);
-		// Pre-increment; increase, then return(increased value, ref to self).
-		Iterator& operator++();
-		// Post-increment; store, increase, then return stored value.
-		Iterator operator++(int);
-		// Comparison operators.
-		bool operator==(const Iterator& other) const;
-		bool operator!=(const Iterator& other) const;
-	};
-	
-	// Iterator helper functions.
-	Iterator begin();
-	Iterator end();
-	
 	// Retrieve a "condition" flag from this provider.
 	virtual int64_t GetCondition(const std::string &name) const = 0;
 	// Copy conditions matching the prefix into the given map.
