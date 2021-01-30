@@ -31,6 +31,13 @@ int64_t ConditionsProvider::GetConditionSum(const string &prefix) const
 
 
 
+int64_t ConditionsProvider::operator [] (const std::string &name) const
+{
+	return GetCondition(name);
+}
+
+
+
 // Add a value to a condition. Returns true on success, false on failure.
 // Actual implementers of this interface can choose to override this method
 // and provide a more efficient implementation.

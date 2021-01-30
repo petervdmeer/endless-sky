@@ -30,6 +30,7 @@ class ConditionsStore : public ConditionsProvider {
 public:
 	// Retrieve a "condition" flag from this provider.
 	virtual int64_t GetCondition(const std::string &name) const override;
+	virtual int64_t operator [] (const std::string &name) const override;
 	// Copy conditions matching the prefix into the given map.
 	virtual void GetConditions(std::map<std::string, int64_t> &targetMap, const std::string &prefix) const override;
 	// Retrieve a sum (addition) of all "condition" flags starting with the
