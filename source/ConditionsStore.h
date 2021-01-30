@@ -47,8 +47,20 @@ public:
 	const std::map<std::string, int64_t> &Locals() const;
 	
 protected:
+	//Inherited from ConditionsProvider
+	virtual void RegisterChild(ConditionsProvider &child, const std::vector<std::string> &matchPrefixes, const std::vector<std::string> &matchExacts) override;
+	virtual void DeRegisterChild(ConditionsProvider &child) override;
+
+
+
+protected:
 	// Storage for the actual conditions.
 	std::map<std::string, int64_t> conditions;
+	
+private:
+	// Storage of child providers by prefix and full string.
+	std::map<std::string, ConditionsProvider*> matchPrefixes;
+	std::map<std::string, ConditionsProvider*> matchExacts;
 };
 
 

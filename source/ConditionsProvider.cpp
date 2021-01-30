@@ -65,3 +65,19 @@ bool ConditionsProvider::EraseCondition(const string &name)
 {
 	return false;
 }
+
+
+
+void ConditionsProvider::RegisterChild(ConditionsProvider &child, const vector<string> &matchPrefixes, const vector<string> &matchExacts)
+{
+	//Not all providers use this mechanism, so default to an empty implementation.
+	return;
+}
+
+
+
+void ConditionsProvider::DeRegisterChild(ConditionsProvider &child)
+{
+	//Not all providers use this mechanism, so default to an empty implementation.
+	return;
+}

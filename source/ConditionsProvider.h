@@ -15,6 +15,7 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
 #include <map>
 #include <string>
+#include <vector>
 
 
 
@@ -36,6 +37,21 @@ public:
 	virtual bool AddCondition(const std::string &name, int64_t value);
 	virtual bool SetCondition(const std::string &name, int64_t value);
 	virtual bool EraseCondition(const std::string &name);
+
+
+protected:
+	// Register the conditions for which a child of this provider acts.
+	// matchPrefixes contains the prefixes for which the child acts, for example
+	// "ship: " for the child that provides ship-related conditions and "preferences: "
+	// for if we also want to make the Preferences classes a conditions provider.
+	// matchExacts contains the exact strings for which the child acts, for example
+	// automatic conditions like the in-game date.
+	// As before, this can also be handled through other means and is thus not required
+	// for all parent/child relations.
+	virtual void RegisterChild(ConditionsProvider &child, const std::vector<std::string> &matchPrefixes, const std::vector<std::string> &matchExacts);
+
+	// Remove registration for a child. Required to be called if the child was registered and ceases to exist.
+	virtual void DeRegisterChild(ConditionsProvider &child);
 };
 
 

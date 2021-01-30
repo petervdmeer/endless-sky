@@ -24,8 +24,34 @@ map<string, int64_t> &ConditionsStore::Locals()
 
 
 
-// Access the local (non-forwarded) conditions of this store.
+// Read-only access to the local (non-forwarded) conditions of this store.
 const map<string, int64_t> &ConditionsStore::Locals() const
 {
 	return conditions;
+}
+
+
+
+void ConditionsStore::RegisterChild(ConditionsProvider &child, const vector<string> &matchPrefixes, const vector<string> &matchExacts)
+{
+	// Store the pointers to the children to forward to.
+	for(auto &matchPrefix: matchPrefixes)
+		this->matchPrefixes[matchPrefix] = &child;
+	for(auto &matchExact: matchExacts)
+		this->matchExacts[matchExact] = &child;
+}
+
+
+
+void ConditionsStore::DeRegisterChild(ConditionsProvider &child)
+{
+	ConditionsProvider *childPtr = &child;
+	// Remove the child from all matchlist entries where it was listed.
+	for(auto it = matchPrefixes.begin(); it != matchPrefixes.end(); it++)
+		if(it->second == childPtr)
+			it = matchPrefixes.erase(it);
+	
+	for(auto it = matchExacts.begin(); it != matchExacts.end(); it++)
+		if(it->second == childPtr)
+			it = matchExacts.erase(it);
 }
