@@ -112,7 +112,7 @@ const News *SpaceportPanel::PickNews() const
 {
 	vector<const News *> matches;
 	const Planet *planet = player.GetPlanet();
-	const ConditionsStore &conditions = player.Conditions();
+	auto &conditions = player.Conditions();
 	for(const auto &it : GameData::SpaceportNews())
 		if(!it.second.IsEmpty() && it.second.Matches(planet, conditions))
 			matches.push_back(&it.second);
