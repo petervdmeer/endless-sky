@@ -15,7 +15,7 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
 #include "Account.h"
 #include "CargoHold.h"
-#include "ConditionsProvider.h"
+#include "ConditionsStore.h"
 #include "DataNode.h"
 #include "Date.h"
 #include "Depreciation.h"
@@ -49,7 +49,7 @@ class UI;
 // back in exactly the same state later. This includes what changes the player
 // has made to the universe, what jobs are being offered to them right now,
 // and what their current travel plan is, if any.
-class PlayerInfo : public ConditionsProvider {
+class PlayerInfo : public ConditionsStore {
 public:
 	PlayerInfo() = default;
 	
@@ -192,9 +192,6 @@ public:
 	virtual int64_t GetCondition(const std::string &name) const override;
 	// Copy conditions matching the prefix into the given map.
 	virtual void GetConditions(std::map<std::string, int64_t> &targetMap, const std::string &prefix) const override;
-	// Retrieve a sum (addition) of all "condition" flags starting with the
-	// given prefix.
-	virtual int64_t GetConditionSum(const std::string &prefix) const override;
 	// Set a "condition" flag to the given value. Returns true on success,
 	// false on failure.
 	virtual bool SetCondition(const std::string &name, int64_t value) override;

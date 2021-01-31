@@ -16,21 +16,6 @@ using namespace std;
 
 
 
-// Retrieve a sum (addition) of all "condition" flags starting with the
-// given prefix. Actual implementers of this interface can choose to override
-// this method and provide a more efficient implementation.
-int64_t ConditionsProvider::GetConditionSum(const string &prefix) const
-{
-	int64_t returnValue = 0;
-	map<string, int64_t> summationMap;
-	GetConditions(summationMap, prefix);
-	for(auto &it : summationMap)
-		returnValue += it.second;
-	return returnValue;
-}
-
-
-
 // Add a value to a condition. Returns true on success, false on failure.
 // Actual implementers of this interface can choose to override this method
 // and provide a more efficient implementation.
