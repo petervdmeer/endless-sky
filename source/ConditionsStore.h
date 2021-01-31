@@ -35,7 +35,6 @@ public:
 	virtual void GetConditions(std::map<std::string, int64_t> &targetMap, const std::string &prefix) const override;
 	// Add a value to a condition, set a value for a condition or erase a
 	// condition completely. Returns true on success, false on failure.
-	virtual bool AddCondition(const std::string &name, int64_t value) override;
 	virtual bool SetCondition(const std::string &name, int64_t value) override;
 	virtual bool EraseCondition(const std::string &name) override;
 	
