@@ -76,14 +76,6 @@ bool ConditionsStore::EraseCondition(const string &name)
 
 
 
-// Get mutable access to the local (non-forwarded) conditions of this store.
-map<string, int64_t> &ConditionsStore::Locals()
-{
-	return conditions;
-}
-
-
-
 // Read-only access to the local (non-forwarded) conditions of this store.
 const map<string, int64_t> &ConditionsStore::Locals() const
 {
