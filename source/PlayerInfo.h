@@ -196,8 +196,8 @@ public:
 	virtual bool AddCondition(const std::string &name, int64_t value) override;
 	virtual bool EraseCondition(const std::string &name) override;
 	// Direct access to "condition" flags data.
-	std::map<std::string, int64_t> &Conditions();
-	const std::map<std::string, int64_t> &Conditions() const;
+	ConditionsStore &Conditions();
+	const ConditionsStore &Conditions() const;
 	// Set and check the reputation conditions, which missions and events
 	// can use to modify the player's reputation with other governments.
 	void SetReputationConditions();
@@ -339,7 +339,7 @@ private:
 	// its NPCs to be placed before the player lands, and is then cleared.
 	Mission *activeBoardingMission = nullptr;
 	
-	std::map<std::string, int64_t> conditions;
+	ConditionsStore conditions;
 	
 	std::set<const System *> seen;
 	std::set<const System *> visitedSystems;

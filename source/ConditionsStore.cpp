@@ -23,6 +23,19 @@ int64_t ConditionsStore::operator [] (const std::string &name) const
 
 
 
+bool ConditionsStore::HasCondition(const std::string &name) const
+{
+	ConditionsProvider* cp = GetRegisteredChild(name);
+	if(cp != nullptr)
+		return cp->HasCondition(name);
+	
+	// No other table matches, lets search in the internal storage.
+	auto it = conditions.find(name);
+	return it != conditions.end();
+}
+
+
+
 // Get a value for a condition, first by trying the children and if
 // that doesn't succeed then internally in the store
 int64_t ConditionsStore::GetCondition(const string &name) const
@@ -31,7 +44,7 @@ int64_t ConditionsStore::GetCondition(const string &name) const
 	if(cp != nullptr)
 		return cp->GetCondition(name);
 	
-	// No other table matches, lets store in the internal storage.
+	// No other table matches, lets search in the internal storage.
 	auto it = conditions.find(name);
 	if(it != conditions.end())
 		return it->second;
@@ -78,6 +91,15 @@ bool ConditionsStore::EraseCondition(const string &name)
 
 // Read-only access to the local (non-forwarded) conditions of this store.
 const map<string, int64_t> &ConditionsStore::Locals() const
+{
+	return conditions;
+}
+
+
+
+// Get mutable access to the local (non-forwarded) conditions.
+// This function is to be deleted.
+map<string, int64_t> &ConditionsStore::Locals()
 {
 	return conditions;
 }

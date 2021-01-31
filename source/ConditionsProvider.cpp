@@ -16,6 +16,13 @@ using namespace std;
 
 
 
+bool ConditionsProvider::HasCondition(const std::string &name) const
+{
+	return false;
+}
+
+
+
 // Add a value to a condition. Returns true on success, false on failure.
 // Actual implementers of this interface can choose to override this method
 // and provide a more efficient implementation.

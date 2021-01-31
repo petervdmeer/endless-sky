@@ -29,8 +29,9 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 class ConditionsStore : public ConditionsProvider {
 public:
 	// Retrieve a "condition" flag from this provider.
+	int64_t operator [] (const std::string &name) const;
+	virtual bool HasCondition(const std::string &name) const override;
 	virtual int64_t GetCondition(const std::string &name) const override;
-	virtual int64_t operator [] (const std::string &name) const;
 	// Add a value to a condition, set a value for a condition or erase a
 	// condition completely. Returns true on success, false on failure.
 	virtual bool SetCondition(const std::string &name, int64_t value) override;
@@ -38,6 +39,7 @@ public:
 	
 	// Direct (read-only) access to non-forwarded (local to this class) "condition" flags data.
 	const std::map<std::string, int64_t> &Locals() const;
+	std::map<std::string, int64_t> &Locals();
 
 
 

@@ -227,7 +227,7 @@ void PlayerInfo::Load(const string &path)
 		else if(child.Token(0) == "conditions")
 		{
 			for(const DataNode &grand : child)
-				conditions[grand.Token(0)] = (grand.Size() >= 2) ? grand.Value(1) : 1;
+				conditions.SetCondition(grand.Token(0), (grand.Size() >= 2) ? grand.Value(1) : 1);
 		}
 		else if(child.Token(0) == "event")
 			gameEvents.emplace_back(child);
@@ -521,9 +521,9 @@ const Date &PlayerInfo::GetDate() const
 void PlayerInfo::IncrementDate()
 {
 	++date;
-	conditions["day"] = date.Day();
-	conditions["month"] = date.Month();
-	conditions["year"] = date.Year();
+	conditions.SetCondition("day", date.Day());
+	conditions.SetCondition("month", date.Month());
+	conditions.SetCondition("year", date.Year());
 	
 	// Check if any special events should happen today.
 	auto it = gameEvents.begin();
@@ -548,8 +548,8 @@ void PlayerInfo::IncrementDate()
 	static const string prefix[2] = {"salary: ", "tribute: "};
 	for(int i = 0; i < 2; ++i)
 	{
-		auto it = conditions.lower_bound(prefix[i]);
-		for( ; it != conditions.end() && !it->first.compare(0, prefix[i].length(), prefix[i]); ++it)
+		auto it = conditions.Locals().lower_bound(prefix[i]);
+		for( ; it != conditions.Locals().end() && !it->first.compare(0, prefix[i].length(), prefix[i]); ++it)
 			total[i] += it->second;
 	}
 	if(total[0] || total[1])
@@ -1764,9 +1764,10 @@ void PlayerInfo::HandleEvent(const ShipEvent &event, UI *ui)
 	if(event.ActorGovernment() && event.ActorGovernment()->IsPlayer())
 		if((event.Type() & ShipEvent::DISABLE) && event.Target() && !event.Target()->IsYours())
 		{
-			auto &rating = conditions["combat rating"];
+			auto rating = conditions["combat rating"];
 			static const int64_t maxRating = 2000000000;
 			rating = min(maxRating, rating + (event.Target()->Cost() + 250000) / 500000);
+			conditions.SetCondition("combat rating", rating);
 		}
 	
 	for(Mission &mission : missions)
@@ -1782,8 +1783,7 @@ void PlayerInfo::HandleEvent(const ShipEvent &event, UI *ui)
 // Get the value of the given condition (default 0).
 int64_t PlayerInfo::GetCondition(const string &name) const
 {
-	auto it = conditions.find(name);
-	return (it == conditions.end()) ? 0 : it->second;
+	return conditions.GetCondition(name);
 }
 
 
@@ -1791,8 +1791,7 @@ int64_t PlayerInfo::GetCondition(const string &name) const
 // Set a condition to the given value.
 bool PlayerInfo::SetCondition(const string &name, int64_t value)
 {
-	conditions[name] = value;
-	return true;
+	return conditions.SetCondition(name, value);
 }
 
 
@@ -1800,8 +1799,7 @@ bool PlayerInfo::SetCondition(const string &name, int64_t value)
 // Add a value to the given condition.
 bool PlayerInfo::AddCondition(const string &name, int64_t value)
 {
-	conditions[name] += value;
-	return true;
+	return conditions.AddCondition(name, value);
 }
 
 
@@ -1809,14 +1807,13 @@ bool PlayerInfo::AddCondition(const string &name, int64_t value)
 // Remove the value for some condition.
 bool PlayerInfo::EraseCondition(const string &name)
 {
-	conditions.erase(name);
-	return true;
+	return conditions.EraseCondition(name);
 }
 
 
 
 // Get mutable access to the player's list of conditions.
-map<string, int64_t> &PlayerInfo::Conditions()
+ConditionsStore &PlayerInfo::Conditions()
 {
 	return conditions;
 }
@@ -1824,7 +1821,7 @@ map<string, int64_t> &PlayerInfo::Conditions()
 
 
 // Access the player's list of conditions.
-const map<string, int64_t> &PlayerInfo::Conditions() const
+const ConditionsStore &PlayerInfo::Conditions() const
 {
 	return conditions;
 }
@@ -1838,7 +1835,7 @@ void PlayerInfo::SetReputationConditions()
 	for(const auto &it : GameData::Governments())
 	{
 		int64_t rep = it.second.Reputation();
-		conditions["reputation: " + it.first] = rep;
+		conditions.SetCondition("reputation: " + it.first, rep);
 	}
 }
 
@@ -2366,7 +2363,7 @@ void PlayerInfo::ApplyChanges()
 	
 	// Check which planets you have dominated.
 	static const string prefix = "tribute: ";
-	for(auto it = conditions.lower_bound(prefix); it != conditions.end(); ++it)
+	for(auto it = conditions.Locals().lower_bound(prefix); it != conditions.Locals().end(); ++it)
 	{
 		if(it->first.compare(0, prefix.length(), prefix))
 			break;
@@ -2483,13 +2480,13 @@ void PlayerInfo::UpdateAutoConditions(bool isBoarding)
 {
 	// Bound financial conditions to +/- 4.6 x 10^18 credits, within the range of a 64-bit int.
 	static constexpr int64_t limit = static_cast<int64_t>(1) << 62;
-	conditions["net worth"] = min(limit, max(-limit, accounts.NetWorth()));
-	conditions["credits"] = min(limit, accounts.Credits());
-	conditions["unpaid mortgages"] = min(limit, accounts.TotalDebt("Mortgage"));
-	conditions["unpaid fines"] = min(limit, accounts.TotalDebt("Fine"));
-	conditions["unpaid salaries"] = min(limit, accounts.SalariesOwed());
-	conditions["unpaid maintenance"] = min(limit, accounts.MaintenanceDue());
-	conditions["credit score"] = accounts.CreditScore();
+	conditions.SetCondition("net worth", min(limit, max(-limit, accounts.NetWorth())));
+	conditions.SetCondition("credits", min(limit, accounts.Credits()));
+	conditions.SetCondition("unpaid mortgages", min(limit, accounts.TotalDebt("Mortgage")));
+	conditions.SetCondition("unpaid fines", min(limit, accounts.TotalDebt("Fine")));
+	conditions.SetCondition("unpaid salaries", min(limit, accounts.SalariesOwed()));
+	conditions.SetCondition("unpaid maintenance", min(limit, accounts.MaintenanceDue()));
+	conditions.SetCondition("credit score", accounts.CreditScore());
 	// Serialize the current reputation with other governments.
 	SetReputationConditions();
 	// Helper lambda function to clear a range
@@ -2501,53 +2498,53 @@ void PlayerInfo::UpdateAutoConditions(bool isBoarding)
 			conditionsMap.erase(first, last);
 	};
 	// Clear any existing ships: conditions. (Note: '!' = ' ' + 1.)
-	clearRange(conditions, "ships: ", "ships:!");
+	clearRange(conditions.Locals(), "ships: ", "ships:!");
 	// Store special conditions for cargo and passenger space.
-	conditions["cargo space"] = 0;
-	conditions["passenger space"] = 0;
+	conditions.SetCondition("cargo space", 0);
+	conditions.SetCondition("passenger space", 0);
 	for(const shared_ptr<Ship> &ship : ships)
 		if(!ship->IsParked() && !ship->IsDisabled() && ship->GetSystem() == system)
 		{
-			conditions["cargo space"] += ship->Attributes().Get("cargo space");
-			conditions["passenger space"] += ship->Attributes().Get("bunks") - ship->RequiredCrew();
-			++conditions["ships: " + ship->Attributes().Category()];
+			conditions.AddCondition("cargo space", ship->Attributes().Get("cargo space"));
+			conditions.AddCondition("passenger space", ship->Attributes().Get("bunks") - ship->RequiredCrew());
+			conditions.AddCondition("ships: " + ship->Attributes().Category(), 1);
 		}
 	// If boarding a ship, missions should not consider the space available
 	// in the player's entire fleet. The only fleet parameter offered to a
 	// boarding mission is the fleet composition (e.g. 4 Heavy Warships).
 	if(isBoarding && flagship)
 	{
-		conditions["cargo space"] = flagship->Cargo().Free();
-		conditions["passenger space"] = flagship->Cargo().BunksFree();
+		conditions.SetCondition("cargo space", flagship->Cargo().Free());
+		conditions.SetCondition("passenger space", flagship->Cargo().BunksFree());
 	}
 	
 	// Clear any existing flagship system: and planet: conditions. (Note: '!' = ' ' + 1.)
-	clearRange(conditions, "flagship system: ", "flagship system:!");
-	clearRange(conditions, "flagship planet: ", "flagship planet:!");
+	clearRange(conditions.Locals(), "flagship system: ", "flagship system:!");
+	clearRange(conditions.Locals(), "flagship planet: ", "flagship planet:!");
 	
 	// Store conditions for flagship current crew, required crew, and bunks.
 	if(flagship)
 	{
-		conditions["flagship crew"] = flagship->Crew();
-		conditions["flagship required crew"] = flagship->RequiredCrew();
-		conditions["flagship bunks"] = flagship->Attributes().Get("bunks");
+		conditions.SetCondition("flagship crew", flagship->Crew());
+		conditions.SetCondition("flagship required crew", flagship->RequiredCrew());
+		conditions.SetCondition("flagship bunks", flagship->Attributes().Get("bunks"));
 		if(flagship->GetSystem())
-			conditions["flagship system: " + flagship->GetSystem()->Name()] = 1;
+			conditions.SetCondition("flagship system: " + flagship->GetSystem()->Name(), 1);
 		if(flagship->GetPlanet())
-			conditions["flagship planet: " + flagship->GetPlanet()->TrueName()] = 1;
+			conditions.SetCondition("flagship planet: " + flagship->GetPlanet()->TrueName(), 1);
 	}
 	else
 	{
-		conditions["flagship crew"] = 0;
-		conditions["flagship required crew"] = 0;
-		conditions["flagship bunks"] = 0;
+		conditions.SetCondition("flagship crew", 0);
+		conditions.SetCondition("flagship required crew", 0);
+		conditions.SetCondition("flagship bunks", 0);
 	}
 	
 	// Conditions for your fleet's attractiveness to pirates:
 	pair<double, double> factors = RaidFleetFactors();
-	conditions["cargo attractiveness"] = factors.first;
-	conditions["armament deterrence"] = factors.second;
-	conditions["pirate attraction"] = factors.first - factors.second;
+	conditions.SetCondition("cargo attractiveness", factors.first);
+	conditions.SetCondition("armament deterrence", factors.second);
+	conditions.SetCondition("pirate attraction", factors.first - factors.second);
 }
 
 
@@ -2857,12 +2854,12 @@ void PlayerInfo::Save(const string &path) const
 		mission.Save(out, "available mission");
 	
 	// Save any "condition" flags that are set.
-	if(!conditions.empty())
+	if(!conditions.Locals().empty())
 	{
 		out.Write("conditions");
 		out.BeginChild();
 		{
-			for(const auto &it : conditions)
+			for(const auto &it : conditions.Locals())
 			{
 				// If the condition's value is 1, don't bother writing the 1.
 				if(it.second == 1)

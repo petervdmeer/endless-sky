@@ -901,16 +901,16 @@ bool Mission::Do(Trigger trigger, PlayerInfo &player, UI *ui, const shared_ptr<S
 	// not prevent a mission from being failed or aborted.
 	if(trigger == FAIL)
 	{
-		--player.Conditions()[name + ": active"];
-		++player.Conditions()[name + ": failed"];
+		player.AddCondition(name + ": active", -1);
+		player.AddCondition(name + ": failed", 1);
 	}
 	else if(trigger == ABORT)
 	{
-		--player.Conditions()[name + ": active"];
-		++player.Conditions()[name + ": aborted"];
+		player.AddCondition(name + ": active", -1);
+		player.AddCondition(name + ": aborted", 1);
 		// Set the failed mission condition here as well for
 		// backwards compatibility.
-		++player.Conditions()[name + ": failed"];
+		player.AddCondition(name + ": failed", 1);
 	}
 	
 	// Don't update any further conditions if this action exists and can't be completed.
