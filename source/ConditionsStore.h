@@ -39,7 +39,6 @@ public:
 	
 	// Direct (read-only) access to non-forwarded (local to this class) "condition" flags data.
 	const std::map<std::string, int64_t> &Locals() const;
-	std::map<std::string, int64_t> &Locals();
 
 
 

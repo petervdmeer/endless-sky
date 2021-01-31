@@ -97,15 +97,6 @@ const map<string, int64_t> &ConditionsStore::Locals() const
 
 
 
-// Get mutable access to the local (non-forwarded) conditions.
-// This function is to be deleted.
-map<string, int64_t> &ConditionsStore::Locals()
-{
-	return conditions;
-}
-
-
-
 void ConditionsStore::RegisterChild(ConditionsProvider &child, const vector<string> &matchPrefixes, const vector<string> &matchExacts)
 {
 	// Store the pointers to the children to forward to.
