@@ -132,16 +132,14 @@ ConditionsProvider* ConditionsStore::GetRegisteredChild(const std::string &name)
 	
 	// Then check if this is a known prefix.
 	// The lower_bound function will typically end up beyond the required
-	// entry, but it will arrive on the exact location in case of an
-	// exact match.
+	// entry, because the entries are prefixes, but we can still arrive on
+	// the exact location in case of an exact match.
+	if(matchPrefixes.empty())
+		return nullptr;
+	
 	auto preIt = matchPrefixes.lower_bound(name);
 	if(preIt == matchPrefixes.end())
-	{
-		if(preIt == matchPrefixes.begin())
-			return nullptr;
-		else
-			--preIt;
-	}
+		--preIt;
 	else if(preIt->first.compare(0, preIt->first.length(), name))
 		return preIt->second;
 	else if(preIt == matchPrefixes.begin())
@@ -149,8 +147,8 @@ ConditionsProvider* ConditionsStore::GetRegisteredChild(const std::string &name)
 	else
 		--preIt;
 	
-	// We should have a match for preIt at this point if there is any
-	// prefixed match to be made.
+	// We should have a match for preIt at this point if there were any
+	// prefix matches to be made.
 	if(preIt->first.compare(0, preIt->first.length(), name))
 		return preIt->second;
 	
