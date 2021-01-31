@@ -89,7 +89,7 @@ bool ConditionsStore::EraseCondition(const string &name)
 
 
 
-// Read-only access to the local (non-forwarded) conditions of this store.
+// Read-only access to the local (non-child) conditions of this store.
 const map<string, int64_t> &ConditionsStore::Locals() const
 {
 	return conditions;

@@ -37,7 +37,7 @@ public:
 	virtual bool SetCondition(const std::string &name, int64_t value) override;
 	virtual bool EraseCondition(const std::string &name) override;
 	
-	// Direct (read-only) access to non-forwarded (local to this class) "condition" flags data.
+	// Direct (read-only) access to non-child (local to this class) "condition" flags data.
 	const std::map<std::string, int64_t> &Locals() const;
 
 
@@ -54,11 +54,9 @@ private:
 
 
 
-protected:
+private:
 	// Storage for the actual conditions.
 	std::map<std::string, int64_t> conditions;
-	
-private:
 	// Storage of child providers by prefix and full string.
 	std::map<std::string, ConditionsProvider*> matchPrefixes;
 	std::map<std::string, ConditionsProvider*> matchExacts;
