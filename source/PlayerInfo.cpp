@@ -1788,16 +1788,6 @@ int64_t PlayerInfo::GetCondition(const string &name) const
 
 
 
-// Copy conditions matching the prefix into the given map.
-void PlayerInfo::GetConditions(map<string, int64_t> &targetMap, const string &prefix) const
-{
-	auto it = conditions.lower_bound(prefix);
-	for( ; it != conditions.end() && !it->first.compare(0, prefix.length(), prefix); ++it)
-		targetMap[it->first] = it->second;
-}
-
-
-
 // Set a condition to the given value.
 bool PlayerInfo::SetCondition(const string &name, int64_t value)
 {

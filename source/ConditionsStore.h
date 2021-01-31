@@ -31,8 +31,6 @@ public:
 	// Retrieve a "condition" flag from this provider.
 	virtual int64_t GetCondition(const std::string &name) const override;
 	virtual int64_t operator [] (const std::string &name) const;
-	// Copy conditions matching the prefix into the given map.
-	virtual void GetConditions(std::map<std::string, int64_t> &targetMap, const std::string &prefix) const override;
 	// Add a value to a condition, set a value for a condition or erase a
 	// condition completely. Returns true on success, false on failure.
 	virtual bool SetCondition(const std::string &name, int64_t value) override;

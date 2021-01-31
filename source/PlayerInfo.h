@@ -190,8 +190,6 @@ public:
 	
 	// Access the "condition" flags for this player.
 	virtual int64_t GetCondition(const std::string &name) const override;
-	// Copy conditions matching the prefix into the given map.
-	virtual void GetConditions(std::map<std::string, int64_t> &targetMap, const std::string &prefix) const override;
 	// Set a "condition" flag to the given value. Returns true on success,
 	// false on failure.
 	virtual bool SetCondition(const std::string &name, int64_t value) override;
