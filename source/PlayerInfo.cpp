@@ -548,8 +548,8 @@ void PlayerInfo::IncrementDate()
 	static const string prefix[2] = {"salary: ", "tribute: "};
 	for(int i = 0; i < 2; ++i)
 	{
-		auto it = conditions.Locals().lower_bound(prefix[i]);
-		for( ; it != conditions.Locals().end() && !it->first.compare(0, prefix[i].length(), prefix[i]); ++it)
+		auto it = GetManualConditions().lower_bound(prefix[i]);
+		for( ; it != GetManualConditions().end() && !it->first.compare(0, prefix[i].length(), prefix[i]); ++it)
 			total[i] += it->second;
 	}
 	if(total[0] || total[1])
@@ -1812,6 +1812,27 @@ bool PlayerInfo::EraseCondition(const string &name)
 
 
 
+// Temporary function to erase conditions by prefix. This function should
+// no longer be needed once automatically generated conditions are on-demand
+// automatically generated.
+// This function is performance-wise also not very efficient, but that
+// might be okay for a temporary function.
+void PlayerInfo::EraseManualByPrefix(const string &prefix)
+{
+	set<string> toErase;
+	
+	// Generate the list of items to erase
+	auto it = GetManualConditions().lower_bound(prefix);
+	for( ; it != GetManualConditions().end() && !it->first.compare(0, prefix.length(), prefix); ++it)
+		toErase.insert(it->first);
+	
+	// Erase the selected items.
+	for(auto toE : toErase)
+		EraseCondition(toE);
+}
+
+
+
 // Get mutable access to the player's list of conditions.
 ConditionsStore &PlayerInfo::Conditions()
 {
@@ -1824,6 +1845,14 @@ ConditionsStore &PlayerInfo::Conditions()
 const ConditionsStore &PlayerInfo::Conditions() const
 {
 	return conditions;
+}
+
+
+
+// Iteratable read-only access to all manual (non-automatic) player conditions.
+const std::map<std::string, int64_t> &PlayerInfo::GetManualConditions() const
+{
+	return conditions.Locals();
 }
 
 
@@ -2363,7 +2392,7 @@ void PlayerInfo::ApplyChanges()
 	
 	// Check which planets you have dominated.
 	static const string prefix = "tribute: ";
-	for(auto it = conditions.Locals().lower_bound(prefix); it != conditions.Locals().end(); ++it)
+	for(auto it = GetManualConditions().lower_bound(prefix); it != GetManualConditions().end(); ++it)
 	{
 		if(it->first.compare(0, prefix.length(), prefix))
 			break;
@@ -2489,16 +2518,8 @@ void PlayerInfo::UpdateAutoConditions(bool isBoarding)
 	conditions.SetCondition("credit score", accounts.CreditScore());
 	// Serialize the current reputation with other governments.
 	SetReputationConditions();
-	// Helper lambda function to clear a range
-	auto clearRange = [](map<string, int64_t> &conditionsMap, string firstStr, string lastStr)
-	{
-		auto first = conditionsMap.lower_bound(firstStr);
-		auto last = conditionsMap.lower_bound(lastStr);
-		if(first != last)
-			conditionsMap.erase(first, last);
-	};
 	// Clear any existing ships: conditions. (Note: '!' = ' ' + 1.)
-	clearRange(conditions.Locals(), "ships: ", "ships:!");
+	EraseManualByPrefix("ships: ");
 	// Store special conditions for cargo and passenger space.
 	conditions.SetCondition("cargo space", 0);
 	conditions.SetCondition("passenger space", 0);
@@ -2519,8 +2540,8 @@ void PlayerInfo::UpdateAutoConditions(bool isBoarding)
 	}
 	
 	// Clear any existing flagship system: and planet: conditions. (Note: '!' = ' ' + 1.)
-	clearRange(conditions.Locals(), "flagship system: ", "flagship system:!");
-	clearRange(conditions.Locals(), "flagship planet: ", "flagship planet:!");
+	EraseManualByPrefix("flagship system: ");
+	EraseManualByPrefix("flagship planet: ");
 	
 	// Store conditions for flagship current crew, required crew, and bunks.
 	if(flagship)
@@ -2854,12 +2875,12 @@ void PlayerInfo::Save(const string &path) const
 		mission.Save(out, "available mission");
 	
 	// Save any "condition" flags that are set.
-	if(!conditions.Locals().empty())
+	if(!GetManualConditions().empty())
 	{
 		out.Write("conditions");
 		out.BeginChild();
 		{
-			for(const auto &it : conditions.Locals())
+			for(const auto &it : GetManualConditions())
 			{
 				// If the condition's value is 1, don't bother writing the 1.
 				if(it.second == 1)

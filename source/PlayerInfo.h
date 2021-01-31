@@ -49,7 +49,7 @@ class UI;
 // back in exactly the same state later. This includes what changes the player
 // has made to the universe, what jobs are being offered to them right now,
 // and what their current travel plan is, if any.
-class PlayerInfo : public ConditionsStore {
+class PlayerInfo {
 public:
 	PlayerInfo() = default;
 	
@@ -189,15 +189,17 @@ public:
 	void HandleEvent(const ShipEvent &event, UI *ui);
 	
 	// Access the "condition" flags for this player.
-	virtual int64_t GetCondition(const std::string &name) const override;
+	int64_t GetCondition(const std::string &name) const;
 	// Set a "condition" flag to the given value. Returns true on success,
 	// false on failure.
-	virtual bool SetCondition(const std::string &name, int64_t value) override;
-	virtual bool AddCondition(const std::string &name, int64_t value) override;
-	virtual bool EraseCondition(const std::string &name) override;
+	bool SetCondition(const std::string &name, int64_t value);
+	bool AddCondition(const std::string &name, int64_t value);
+	bool EraseCondition(const std::string &name);
+	void EraseManualByPrefix(const std::string &prefix);
 	// Direct access to "condition" flags data.
 	ConditionsStore &Conditions();
 	const ConditionsStore &Conditions() const;
+	const std::map<std::string, int64_t> &GetManualConditions() const;
 	// Set and check the reputation conditions, which missions and events
 	// can use to modify the player's reputation with other governments.
 	void SetReputationConditions();
