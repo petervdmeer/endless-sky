@@ -45,11 +45,18 @@ public:
 	// Direct access to non-forwarded (local to this class) "condition" flags data.
 	std::map<std::string, int64_t> &Locals();
 	const std::map<std::string, int64_t> &Locals() const;
-	
+
+
+
 protected:
 	//Inherited from ConditionsProvider
 	virtual void RegisterChild(ConditionsProvider &child, const std::vector<std::string> &matchPrefixes, const std::vector<std::string> &matchExacts) override;
 	virtual void DeRegisterChild(ConditionsProvider &child) override;
+
+
+
+private:
+	ConditionsProvider* GetRegisteredChild(const std::string &name) const;
 
 
 
