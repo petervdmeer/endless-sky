@@ -227,7 +227,7 @@ void PlayerInfo::Load(const string &path)
 		else if(child.Token(0) == "conditions")
 		{
 			for(const DataNode &grand : child)
-				conditions.SetCondition(grand.Token(0), (grand.Size() >= 2) ? grand.Value(1) : 1);
+				SetCondition(grand.Token(0), (grand.Size() >= 2) ? grand.Value(1) : 1);
 		}
 		else if(child.Token(0) == "event")
 			gameEvents.emplace_back(child);
@@ -521,9 +521,9 @@ const Date &PlayerInfo::GetDate() const
 void PlayerInfo::IncrementDate()
 {
 	++date;
-	conditions.SetCondition("day", date.Day());
-	conditions.SetCondition("month", date.Month());
-	conditions.SetCondition("year", date.Year());
+	SetCondition("day", date.Day());
+	SetCondition("month", date.Month());
+	SetCondition("year", date.Year());
 	
 	// Check if any special events should happen today.
 	auto it = gameEvents.begin();
@@ -1767,7 +1767,7 @@ void PlayerInfo::HandleEvent(const ShipEvent &event, UI *ui)
 			auto rating = conditions["combat rating"];
 			static const int64_t maxRating = 2000000000;
 			rating = min(maxRating, rating + (event.Target()->Cost() + 250000) / 500000);
-			conditions.SetCondition("combat rating", rating);
+			SetCondition("combat rating", rating);
 		}
 	
 	for(Mission &mission : missions)
@@ -1864,7 +1864,7 @@ void PlayerInfo::SetReputationConditions()
 	for(const auto &it : GameData::Governments())
 	{
 		int64_t rep = it.second.Reputation();
-		conditions.SetCondition("reputation: " + it.first, rep);
+		SetCondition("reputation: " + it.first, rep);
 	}
 }
 
@@ -2509,34 +2509,34 @@ void PlayerInfo::UpdateAutoConditions(bool isBoarding)
 {
 	// Bound financial conditions to +/- 4.6 x 10^18 credits, within the range of a 64-bit int.
 	static constexpr int64_t limit = static_cast<int64_t>(1) << 62;
-	conditions.SetCondition("net worth", min(limit, max(-limit, accounts.NetWorth())));
-	conditions.SetCondition("credits", min(limit, accounts.Credits()));
-	conditions.SetCondition("unpaid mortgages", min(limit, accounts.TotalDebt("Mortgage")));
-	conditions.SetCondition("unpaid fines", min(limit, accounts.TotalDebt("Fine")));
-	conditions.SetCondition("unpaid salaries", min(limit, accounts.SalariesOwed()));
-	conditions.SetCondition("unpaid maintenance", min(limit, accounts.MaintenanceDue()));
-	conditions.SetCondition("credit score", accounts.CreditScore());
+	SetCondition("net worth", min(limit, max(-limit, accounts.NetWorth())));
+	SetCondition("credits", min(limit, accounts.Credits()));
+	SetCondition("unpaid mortgages", min(limit, accounts.TotalDebt("Mortgage")));
+	SetCondition("unpaid fines", min(limit, accounts.TotalDebt("Fine")));
+	SetCondition("unpaid salaries", min(limit, accounts.SalariesOwed()));
+	SetCondition("unpaid maintenance", min(limit, accounts.MaintenanceDue()));
+	SetCondition("credit score", accounts.CreditScore());
 	// Serialize the current reputation with other governments.
 	SetReputationConditions();
 	// Clear any existing ships: conditions. (Note: '!' = ' ' + 1.)
 	EraseManualByPrefix("ships: ");
 	// Store special conditions for cargo and passenger space.
-	conditions.SetCondition("cargo space", 0);
-	conditions.SetCondition("passenger space", 0);
+	SetCondition("cargo space", 0);
+	SetCondition("passenger space", 0);
 	for(const shared_ptr<Ship> &ship : ships)
 		if(!ship->IsParked() && !ship->IsDisabled() && ship->GetSystem() == system)
 		{
-			conditions.AddCondition("cargo space", ship->Attributes().Get("cargo space"));
-			conditions.AddCondition("passenger space", ship->Attributes().Get("bunks") - ship->RequiredCrew());
-			conditions.AddCondition("ships: " + ship->Attributes().Category(), 1);
+			AddCondition("cargo space", ship->Attributes().Get("cargo space"));
+			AddCondition("passenger space", ship->Attributes().Get("bunks") - ship->RequiredCrew());
+			AddCondition("ships: " + ship->Attributes().Category(), 1);
 		}
 	// If boarding a ship, missions should not consider the space available
 	// in the player's entire fleet. The only fleet parameter offered to a
 	// boarding mission is the fleet composition (e.g. 4 Heavy Warships).
 	if(isBoarding && flagship)
 	{
-		conditions.SetCondition("cargo space", flagship->Cargo().Free());
-		conditions.SetCondition("passenger space", flagship->Cargo().BunksFree());
+		SetCondition("cargo space", flagship->Cargo().Free());
+		SetCondition("passenger space", flagship->Cargo().BunksFree());
 	}
 	
 	// Clear any existing flagship system: and planet: conditions. (Note: '!' = ' ' + 1.)
@@ -2546,26 +2546,26 @@ void PlayerInfo::UpdateAutoConditions(bool isBoarding)
 	// Store conditions for flagship current crew, required crew, and bunks.
 	if(flagship)
 	{
-		conditions.SetCondition("flagship crew", flagship->Crew());
-		conditions.SetCondition("flagship required crew", flagship->RequiredCrew());
-		conditions.SetCondition("flagship bunks", flagship->Attributes().Get("bunks"));
+		SetCondition("flagship crew", flagship->Crew());
+		SetCondition("flagship required crew", flagship->RequiredCrew());
+		SetCondition("flagship bunks", flagship->Attributes().Get("bunks"));
 		if(flagship->GetSystem())
-			conditions.SetCondition("flagship system: " + flagship->GetSystem()->Name(), 1);
+			SetCondition("flagship system: " + flagship->GetSystem()->Name(), 1);
 		if(flagship->GetPlanet())
-			conditions.SetCondition("flagship planet: " + flagship->GetPlanet()->TrueName(), 1);
+			SetCondition("flagship planet: " + flagship->GetPlanet()->TrueName(), 1);
 	}
 	else
 	{
-		conditions.SetCondition("flagship crew", 0);
-		conditions.SetCondition("flagship required crew", 0);
-		conditions.SetCondition("flagship bunks", 0);
+		SetCondition("flagship crew", 0);
+		SetCondition("flagship required crew", 0);
+		SetCondition("flagship bunks", 0);
 	}
 	
 	// Conditions for your fleet's attractiveness to pirates:
 	pair<double, double> factors = RaidFleetFactors();
-	conditions.SetCondition("cargo attractiveness", factors.first);
-	conditions.SetCondition("armament deterrence", factors.second);
-	conditions.SetCondition("pirate attraction", factors.first - factors.second);
+	SetCondition("cargo attractiveness", factors.first);
+	SetCondition("armament deterrence", factors.second);
+	SetCondition("pirate attraction", factors.first - factors.second);
 }
 
 
