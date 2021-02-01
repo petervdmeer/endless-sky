@@ -2546,20 +2546,27 @@ void PlayerInfo::UpdateAutoConditions(bool isBoarding)
 	// Store conditions for flagship current crew, required crew, and bunks.
 	if(flagship)
 	{
-		SetCondition("flagship crew", flagship->Crew());
-		SetCondition("flagship required crew", flagship->RequiredCrew());
-		SetCondition("flagship bunks", flagship->Attributes().Get("bunks"));
 		if(flagship->GetSystem())
 			SetCondition("flagship system: " + flagship->GetSystem()->Name(), 1);
 		if(flagship->GetPlanet())
 			SetCondition("flagship planet: " + flagship->GetPlanet()->TrueName(), 1);
 	}
-	else
-	{
-		SetCondition("flagship crew", 0);
-		SetCondition("flagship required crew", 0);
-		SetCondition("flagship bunks", 0);
-	}
+
+	// Initialize default functions for flagship on-demand conditions.
+	struct ConditionsStore::OnDemand flagshipConditions;
+	flagshipConditions.hasFun = [] (const string &name){ return true; };
+	flagshipConditions.setFun = [] (const string &name, int64_t value){ return false; };
+	flagshipConditions.eraseFun = [] (const string &name){ return false; };
+	// The getter is different for the conditions, we re-use the struct during the calls (since it gets copied by value).
+	//flagshipConditions.getFun = [this] (const string &name)->int64_t { if(flagship){return flagship->Crew();} return 0; };
+	flagshipConditions.getFun = [] (const string &name)->int64_t { return 0; };
+	conditions.AddExactOnDemandCondition("flagship crew", flagshipConditions);
+	
+	//flagshipConditions.getFun = [this] (const string &name) { if(flagship){return flagship->RequiredCrew();} return 0; };
+	conditions.AddExactOnDemandCondition("flagship required crew", flagshipConditions);
+	
+	//flagshipConditions.getFun = [this] (const string &name) { if(flagship){return flagship->Attributes().Get("bunks");} return 0; };
+	conditions.AddExactOnDemandCondition("flagship required crew", flagshipConditions);
 	
 	// Conditions for your fleet's attractiveness to pirates:
 	pair<double, double> factors = RaidFleetFactors();
