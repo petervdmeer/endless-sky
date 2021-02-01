@@ -50,10 +50,12 @@ int64_t ConditionsStore::operator [] (const std::string &name) const
 
 bool ConditionsStore::HasCondition(const std::string &name) const
 {
-	// When we add support for on-demand conditions, then we can
-	// lookup the on-demand condition here before searching the
-	// manually set conditions.
+	// Check for on-demand condition.
+	const OnDemand* cp = GetOnDemandProvider(name);
+	if(cp != nullptr)
+		return cp->hasFun(name);
 	
+	// Handle from internal storage if no on-demand condition available.
 	auto it = conditions.find(name);
 	return it != conditions.end();
 }
@@ -76,10 +78,12 @@ bool ConditionsStore::AddCondition(const string &name, int64_t value)
 // that doesn't succeed then internally in the store
 int64_t ConditionsStore::GetCondition(const string &name) const
 {
-	// When we add support for on-demand conditions, then we can
-	// lookup the on-demand condition here before searching the
-	// manually set conditions.
+	// Check for on-demand condition.
+	const OnDemand* cp = GetOnDemandProvider(name);
+	if(cp != nullptr)
+		return cp->getFun(name);
 	
+	// Handle from internal storage if no on-demand condition available.
 	auto it = conditions.find(name);
 	if(it != conditions.end())
 		return it->second;
@@ -94,10 +98,12 @@ int64_t ConditionsStore::GetCondition(const string &name) const
 // that doesn't succeed then internally in the store.
 bool ConditionsStore::SetCondition(const string &name, int64_t value)
 {
-	// When we add support for on-demand conditions, then we can
-	// lookup if an on-demand condition matches before we set in
-	// the area of manually set conditions.
-	
+	// Check for on-demand condition.
+	const OnDemand* cp = GetOnDemandProvider(name);
+	if(cp != nullptr)
+		return cp->setFun(name, value);
+
+	// Store in internal storage if no on-demand condition available.
 	conditions[name] = value;
 	return true;
 }
@@ -108,11 +114,12 @@ bool ConditionsStore::SetCondition(const string &name, int64_t value)
 // that doesn't succeed then internally in the store.
 bool ConditionsStore::EraseCondition(const string &name)
 {
-	// When we add support for on-demand conditions, then we should
-	// go through both on-demand conditions as well as the manually set
-	// conditions below (and only return true when all erases were
-	// succesfull).
-	
+	// Check for on-demand condition.
+	const OnDemand* cp = GetOnDemandProvider(name);
+	if(cp != nullptr)
+		return cp->eraseFun(name);
+
+	// Erase from in internal storage if no on-demand condition available.
 	auto it = conditions.find(name);
 	if(it != conditions.end())
 		conditions.erase(it);
@@ -128,4 +135,55 @@ bool ConditionsStore::EraseCondition(const string &name)
 const map<string, int64_t> &ConditionsStore::Locals() const
 {
 	return conditions;
+}
+
+
+
+void ConditionsStore::AddExactOnDemandCondition(std::string &name, OnDemand conditionProvider)
+{
+	// TODO: Move matching values stored in internal storage to provider (or at least remove here, or just warn)?
+	matchExacts[name] = conditionProvider;
+}
+
+
+
+void ConditionsStore::AddPrefixOnDemandCondition(std::string &prefix, OnDemand conditionsProvider)
+{
+	// TODO: Move matching values stored in internal storage to provider (or at least remove here, or just warn)?
+	matchPrefixes[prefix] = conditionsProvider;
+}
+
+
+
+
+const ConditionsStore::OnDemand* ConditionsStore::GetOnDemandProvider(const std::string &name) const
+{
+	// First check if we should set based on exact names.
+	auto exIt = matchExacts.find(name);
+	if(exIt != matchExacts.end())
+		return &(exIt->second);
+
+	// Then check if this is a known prefix.
+	// The lower_bound function will typically end up beyond the required
+	// entry, because the entries are prefixes, but we can still arrive on
+	// the exact location in case of an exact match.
+	if(matchPrefixes.empty())
+		return nullptr;
+
+	auto preIt = matchPrefixes.lower_bound(name);
+	if(preIt == matchPrefixes.end())
+		--preIt;
+	else if(preIt->first.compare(0, preIt->first.length(), name))
+		return &(preIt->second);
+	else if(preIt == matchPrefixes.begin())
+		return nullptr;
+	else
+		--preIt;
+
+	// We should have a match for preIt at this point if there were any
+	// prefix matches to be made.
+	if(preIt->first.compare(0, preIt->first.length(), name))
+		return &(preIt->second);
+
+	return nullptr;
 }

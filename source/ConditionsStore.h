@@ -30,6 +30,19 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 // it's internal storage format).
 class ConditionsStore {
 public:
+	// Typedefs for OnDemand functions
+	typedef int64_t (*GetFun)(std::string);
+	typedef bool (*HasFun)(std::string);
+	typedef bool (*SetFun)(std::string, int64_t);
+	typedef bool (*EraseFun)(std::string);
+	struct OnDemand {
+		GetFun getFun;
+		HasFun hasFun;
+		SetFun setFun;
+		EraseFun eraseFun;
+	};
+	
+public:
 	// Constructors to initialize this class.
 	ConditionsStore();
 	ConditionsStore(std::initializer_list<std::pair<std::string, int64_t>> initialConditions);
@@ -48,11 +61,24 @@ public:
 	// Direct (read-only) access to non-child (local to this class) "condition" flags data.
 	const std::map<std::string, int64_t> &Locals() const;
 
+	// Helper functions to add on-demand conditions.
+	void AddExactOnDemandCondition(std::string &name, OnDemand conditionProvider);
+	void AddPrefixOnDemandCondition(std::string &prefix, OnDemand conditionsProvider);
+
+
+
+private:
+	const OnDemand* GetOnDemandProvider(const std::string &name) const;
+
 
 
 private:
 	// Storage for the actual conditions.
 	std::map<std::string, int64_t> conditions;
+	
+	// Storage for structs with lambda functions for handling on-demand conditions.
+	std::map<std::string, OnDemand> matchExacts;
+	std::map<std::string, OnDemand> matchPrefixes;
 };
 
 
