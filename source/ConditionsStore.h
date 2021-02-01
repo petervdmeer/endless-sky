@@ -31,10 +31,10 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 class ConditionsStore {
 public:
 	// Typedefs for OnDemand functions
-	typedef int64_t (*GetFun)(std::string);
-	typedef bool (*HasFun)(std::string);
-	typedef bool (*SetFun)(std::string, int64_t);
-	typedef bool (*EraseFun)(std::string);
+	typedef int64_t (*GetFun)(const std::string&);
+	typedef bool (*HasFun)(const std::string&);
+	typedef bool (*SetFun)(const std::string&, int64_t);
+	typedef bool (*EraseFun)(const std::string&);
 	struct OnDemand {
 		GetFun getFun;
 		HasFun hasFun;
@@ -62,8 +62,8 @@ public:
 	const std::map<std::string, int64_t> &Locals() const;
 
 	// Helper functions to add on-demand conditions.
-	void AddExactOnDemandCondition(std::string &name, OnDemand conditionProvider);
-	void AddPrefixOnDemandCondition(std::string &prefix, OnDemand conditionsProvider);
+	void AddExactOnDemandCondition(const std::string &name, OnDemand conditionProvider);
+	void AddPrefixOnDemandCondition(const std::string &prefix, OnDemand conditionsProvider);
 
 
 

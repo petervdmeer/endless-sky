@@ -139,7 +139,7 @@ const map<string, int64_t> &ConditionsStore::Locals() const
 
 
 
-void ConditionsStore::AddExactOnDemandCondition(std::string &name, OnDemand conditionProvider)
+void ConditionsStore::AddExactOnDemandCondition(const string &name, OnDemand conditionProvider)
 {
 	// TODO: Move matching values stored in internal storage to provider (or at least remove here, or just warn)?
 	matchExacts[name] = conditionProvider;
@@ -147,7 +147,7 @@ void ConditionsStore::AddExactOnDemandCondition(std::string &name, OnDemand cond
 
 
 
-void ConditionsStore::AddPrefixOnDemandCondition(std::string &prefix, OnDemand conditionsProvider)
+void ConditionsStore::AddPrefixOnDemandCondition(const string &prefix, OnDemand conditionsProvider)
 {
 	// TODO: Move matching values stored in internal storage to provider (or at least remove here, or just warn)?
 	matchPrefixes[prefix] = conditionsProvider;
