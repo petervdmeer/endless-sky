@@ -12,6 +12,7 @@ fleet "Small Southern Merchants"
 	government "Merchant"
 	names "civilian"
 	cargo 3
+	formation "Vee"
 	personality
 		confusion 40
 		timid frugal appeasing
@@ -75,6 +76,7 @@ fleet "Large Southern Merchants"
 	government "Merchant"
 	names "civilian"
 	cargo 4
+	formation "Vee"
 	personality
 		confusion 30
 		timid frugal appeasing
@@ -160,6 +162,7 @@ fleet "Small Core Merchants"
 	government "Merchant"
 	names "civilian"
 	cargo 3
+	formation "Vee"
 	personality
 		confusion 30
 		timid frugal appeasing
@@ -226,6 +229,7 @@ fleet "Large Core Merchants"
 	government "Merchant"
 	names "civilian"
 	cargo 4
+	formation "Vee"
 	personality
 		confusion 20
 		timid frugal appeasing
@@ -343,6 +347,7 @@ fleet "Paradise Merchants"
 	government "Merchant"
 	names "civilian"
 	cargo 2
+	formation "Vee"
 	personality
 		confusion 50
 		timid frugal appeasing
@@ -406,6 +411,7 @@ fleet "Small Northern Merchants"
 	government "Merchant"
 	names "civilian"
 	cargo 3
+	formation "Vee"
 	personality
 		confusion 40
 		timid frugal appeasing
@@ -475,6 +481,7 @@ fleet "Large Northern Merchants"
 	government "Merchant"
 	names "civilian"
 	cargo 4
+	formation "Vee"
 	personality
 		confusion 30
 		timid frugal appeasing
@@ -659,6 +666,7 @@ fleet "Small Human Merchants (Hai)"
 	government "Merchant"
 	names "civilian"
 	cargo 3
+	formation "Vee"
 	personality
 		confusion 40
 		timid frugal appeasing
@@ -720,6 +728,7 @@ fleet "Large Human Merchants (Hai)"
 	government "Merchant"
 	names "civilian"
 	cargo 4
+	formation "Vee"
 	personality
 		confusion 30
 		timid frugal appeasing
@@ -879,6 +888,7 @@ fleet "Human Miners"
 	government "Merchant"
 	names "civilian"
 	cargo 0
+	formation "Vee"
 	personality
 		confusion 20
 		timid frugal mining harvests
@@ -901,6 +911,7 @@ fleet "Small Free Worlds"
 	government "Free Worlds"
 	names "free worlds small"
 	cargo 1
+	formation "Vee"
 	personality
 		heroic disables frugal opportunistic
 	variant 8
@@ -962,6 +973,7 @@ fleet "Large Free Worlds"
 	government "Free Worlds"
 	names "free worlds capital"
 	cargo 1
+	formation "Vee"
 	personality
 		heroic disables frugal opportunistic
 	variant 10
@@ -1069,6 +1081,7 @@ fleet "Small Militia"
 	government "Militia"
 	names "militia"
 	cargo 1
+	formation "Vee"
 	personality
 		heroic frugal
 		confusion 20
@@ -1124,6 +1137,7 @@ fleet "Large Militia"
 	government "Militia"
 	names "militia"
 	cargo 1
+	formation "Vee"
 	personality
 		heroic frugal
 		confusion 20
@@ -1193,6 +1207,7 @@ fleet "Small Republic"
 	government "Republic"
 	names "republic small"
 	cargo 0
+	formation "Echelon (right)"
 	personality
 		heroic opportunistic
 	variant 6
@@ -1214,6 +1229,7 @@ fleet "Large Republic"
 	names "republic capital"
 	fighters "republic fighter"
 	cargo 0
+	formation "Echelon (left)"
 	personality
 		heroic opportunistic
 	variant 5
@@ -1255,6 +1271,7 @@ fleet "Republic Logistics"
 	names "republic capital"
 	fighters "republic fighter"
 	cargo 3
+	formation "Echelon (right)"
 	personality
 		heroic opportunistic
 	variant 19
@@ -1307,6 +1324,7 @@ fleet "Navy Surveillance"
 	names "republic capital"
 	fighters "republic fighter"
 	cargo 0
+	formation "Line (back)"
 	personality
 		surveillance opportunistic
 	variant 10
@@ -1320,6 +1338,7 @@ fleet "Small Deep Merchants"
 	names "deep"
 	fighters "deep fighter"
 	cargo 0
+	formation "Line (back)"
 	personality
 		heroic
 	variant 4
@@ -1355,6 +1374,7 @@ fleet "Large Deep Merchants"
 	names "deep"
 	fighters "deep fighter"
 	cargo 0
+	formation "Line (back)"
 	personality
 		heroic
 	variant 5
@@ -1417,6 +1437,7 @@ fleet "Small Deep Security"
 	names "deep"
 	fighters "deep fighter"
 	cargo 0
+	formation "Line (right)"
 	personality
 		heroic
 	variant 4
@@ -1446,6 +1467,7 @@ fleet "Large Deep Security"
 	names "deep"
 	fighters "deep fighter"
 	cargo 0
+	formation "Line (right)"
 	personality
 		heroic
 	variant 5
@@ -1505,6 +1527,7 @@ fleet "Small Oathkeeper"
 	government "Navy (Oathkeeper)"
 	names "republic small"
 	cargo 0
+	formation "Echelon (right)"
 	personality
 		heroic opportunistic
 	variant 6
@@ -1526,6 +1549,7 @@ fleet "Large Oathkeeper"
 	names "republic capital"
 	fighters "republic fighter"
 	cargo 0
+	formation "Echelon (right)"
 	personality
 		heroic opportunistic
 	variant 5
@@ -1566,6 +1590,7 @@ fleet "Small Syndicate"
 	government "Syndicate"
 	names "syndicate small"
 	cargo 2
+	formation "Line (center)"
 	personality
 		heroic
 	variant 3
@@ -1590,6 +1615,7 @@ fleet "Large Syndicate"
 	names "syndicate capital"
 	fighters "syndicate fighter"
 	cargo 2
+	formation "Line (center)"
 	personality
 		heroic
 	variant 3
@@ -2376,6 +2402,7 @@ fleet "Syndicate Extremists"
 	names "syndicate capital"
 	fighters "syndicate fighter"
 	cargo 0
+	formation "Frontline"
 	personality
 		heroic
 	variant 3
@@ -2407,6 +2434,7 @@ fleet "Syndicate Extremists"
 fleet "Bounty Hunters"
 	government "Bounty Hunter"
 	names "bounty hunter"
+	formation "Line (center)"
 	personality
 		nemesis waiting heroic
 	variant 5
@@ -2460,6 +2488,7 @@ fleet "Marauder fleet I"
 	government "Pirate"
 	names "pirate"
 	cargo 1
+	formation "Line (center)"
 	personality
 		plunders
 	variant 9
@@ -2499,6 +2528,7 @@ fleet "Marauder fleet II"
 	government "Pirate"
 	names "pirate"
 	cargo 1
+	formation "Line (center)"
 	personality
 		plunders
 	variant 4
@@ -2538,6 +2568,7 @@ fleet "Marauder fleet III"
 	government "Pirate"
 	names "pirate"
 	cargo 1
+	formation "Line (center)"
 	personality
 		plunders
 	variant 3
@@ -2577,6 +2608,7 @@ fleet "Marauder fleet IV"
 	government "Pirate"
 	names "pirate"
 	cargo 1
+	formation "Line (center)"
 	personality
 		plunders
 	variant 8
@@ -2620,6 +2652,7 @@ fleet "Marauder fleet V"
 	government "Pirate"
 	names "pirate"
 	cargo 1
+	formation "Line (center)"
 	personality
 		plunders
 	variant 4
@@ -2663,6 +2696,7 @@ fleet "Marauder fleet VI"
 	government "Pirate"
 	names "pirate"
 	cargo 1
+	formation "Line (center)"
 	personality
 		plunders
 	variant 2
@@ -2706,6 +2740,7 @@ fleet "Marauder fleet VII"
 	government "Pirate"
 	names "pirate"
 	cargo 1
+	formation "Line (center)"
 	personality
 		plunders
 	variant 18
@@ -2746,6 +2781,7 @@ fleet "Marauder fleet VIII"
 	government "Pirate"
 	names "pirate"
 	cargo 1
+	formation "Line (center)"
 	personality
 		plunders
 	variant 8
@@ -2783,6 +2819,7 @@ fleet "Marauder fleet IX"
 	government "Pirate"
 	names "pirate"
 	cargo 1
+	formation "Line (center)"
 	personality
 		plunders
 	variant 3
@@ -2824,6 +2861,7 @@ fleet "Marauder fleet X"
 	government "Pirate"
 	names "pirate"
 	cargo 1
+	formation "Line (center)"
 	personality
 		plunders
 	variant 3
@@ -2886,6 +2924,7 @@ fleet "Marauder fleet X"
 fleet "Hired Guns"
 	government "Bounty Hunter"
 	names "bounty hunter"
+	formation "Line (center)"
 	personality
 		nemesis waiting heroic
 	variant 1
