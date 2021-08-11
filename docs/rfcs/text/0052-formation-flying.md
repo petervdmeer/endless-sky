@@ -267,6 +267,9 @@ Some alternatives that could result in a simpler, but also less expressive, spec
 
 
 # Unresolved Questions
-- Behaviours for when to break formations (through ship personalities or otherwise) are not in this specification/RFC. This is a topic that deserves its own separate specification/RFC.
-- The actual UI elements for players to assign ships to formations is not in this specification/RFC. In scope is that is should be possible to create such UI elements, but the actual UI is not in this RFC/specification.
+- Overlap between positions in different (overlapping) formations; the most basic formation code would just place multiple ships on a single position.
+- Multiple categories/typs of ships in a single formation; the `instance` and `ring` keywords are expected to solve situations where different ships need to be placed at different locations in a formation (by just creating 2 instances of the same formation and assigning different ships and rings to each).
+- Exact specifications of which ships should move to which positions (for example based on a location filter per point/line/arc). It still is possible to assign specific ships to specific positions by creating different formations for each specific type of ships, but that seems less power-full than using location-filters.
+- Behaviors for when to break formations (through ship personalities or otherwise) are not in this specification/RFC. This is a topic that deserves its own separate specification/RFC.
+- The actual UI elements for players to assign ships to formations is not in this specification/RFC. In scope is that is should be possible to create such UI elements, but the actual UI is not in this specification/RFC.
 - An in-game (or out-of-game) graphical formations editor is not described in this specification/RFC.
