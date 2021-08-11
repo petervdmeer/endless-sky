@@ -33,6 +33,7 @@ The basic structure of a definition of a formation in the data-files would look 
 formation <name>:
 	flippable [x] [y]
 	rotatable <angle#>
+	point [polar] [diameter|width|height] <x#> <y#>
 	line
 		start [polar] [diameter|width|height] <x#> <y#>
 		end [polar] [diameter|width|height] <x#> <y#>
@@ -76,13 +77,18 @@ Meaning of the keywords:
    - Example: A delta (triangluar) formation around the lead-ship would have a 120 degrees rotational symmetry and be set to 120 degrees rotatable. It can turn 120 degrees and still have roughly the same shape as when turning 0 degrees.
    - Example: A delta-tailing (triangle behind the flagship) formation should however only be considered `transverse` symmetric, since most players would like the tailing formations to only be behind them.
    - Example: A formation that "writes text by forming letters and words" could be rotatable for 1 degree or less, basically causing the heading/velocity of the lead ship to be ignored and ships just staying in the "text positions".
+- `point`: Specifies a single slot in a formation. One ship in the formation pattern can occupy this point.
+   - If the keyword `polar` is given, then this coordinate is given as polar coordinate with x being the angle (0 to 360 degrees) and y being a distance.
+   - If the keyword `diameter` is given, then this coordinate is not in pixels, but in diameters of the largest ship in the formation.
+   - If the keyword `width` is given, then this coordinate is not in pixels, but in widths of the largest ship in the formation.
+   - If the keyword `height` is given, then this coordinate is not in pixels, but in heights of the largest ship in the formation.
 - `line`: Begins a line.
    - `start [polar] [diameter|width|height] <x#> <y#>` The location where to start a line within a formation. (The default value is x=0 and y=0.)
       - x and y give the coordinate in carthesian coordinates in pixels.
          - If the keyword `polar` is given, then this coordinate is given as polar coordinate with x being the angle (0 to 360 degrees) and y being a distance.
          - If the keyword `diameter` is given, then this coordinate is not in pixels, but in diameters of the largest ship in the formation.
          - If the keyword `width` is given, then this coordiate is not in pixels, but in widths of the largest ship in the formation.
-         - If the keyword `height` is given, then this coordinate is not in pixels, butin heights of the largest ship in the formation.
+         - If the keyword `height` is given, then this coordinate is not in pixels, but in heights of the largest ship in the formation.
       - For the first ring lines this coordinate is relative to the center of the formation.
       - For repeat ring lines this coordinate is relative to the start coordinate of the previous ring.
       - If the start keyword is given multiple times, then the values will be added.
