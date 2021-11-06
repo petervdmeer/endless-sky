@@ -1,0 +1,510 @@
+# Savegame with:
+# - Fighter flagship
+# - Secondary carrier in same system
+# - Escorts in other system
+test-data "Fighters and Carriers and Escorts"
+	category "savegame"
+	contents
+		pilot Bobby Bughunter
+		date 16 11 3013
+		system Rutilicus
+		planet "New Boston"
+		clearance
+		"map coloring" -6
+		"map zoom" 0
+		account
+			credits 200000000
+		conditions
+			"Intro [0]: declined"
+			"Intro [0]: offered"
+		ship "Finch"
+			name "My First Fighter"
+			sprite "ship/finch"
+			thumbnail "thumbnail/finch"
+			attributes
+				category "Fighter"
+				"cost" 126000
+				"shields" 1100
+				"hull" 200
+				"required crew" 1
+				"bunks" 1
+				"mass" 40
+				"drag" .83
+				"heat dissipation" .85
+				"outfit space" 110
+				"weapon capacity" 20
+				"engine capacity" 40
+				weapon
+					"blast radius" 12
+					"shield damage" 120
+					"hull damage" 60
+					"hit force" 180
+			outfits
+				"Beam Laser"
+				"Javelin Mini Pod"
+				"Javelin" 40
+				"nGVF-BB Fuel Cell"
+				"LP036a Battery Pack"
+				"D14-RN Shield Generator"
+				"Chipmunk Plasma Thruster"
+				"Chipmunk Plasma Steering"
+			crew 1
+			shields 1100
+			hull 200
+			position 0 0
+			engine -5 32
+			engine 5 32
+			gun -7 -14 "Beam Laser"
+			gun 7 -14 "Javelin Mini Pod"
+			leak "flame" 60 80
+			explode "tiny explosion" 15
+			explode "small explosion" 5
+			system Rutilicus
+			planet "New Boston"
+		ship "Aerie"
+			name "Docker"
+			sprite "ship/aerie"
+			thumbnail "thumbnail/aerie"
+			attributes
+				category "Medium Warship"
+				"cost" 3500000
+				"shields" 5700
+				"hull" 1900
+				"required crew" 10
+				"bunks" 28
+				"mass" 130
+				"drag" 4.1
+				"heat dissipation" .7
+				"fuel capacity" 500
+				"cargo space" 50
+				"outfit space" 390
+				"weapon capacity" 150
+				"engine capacity" 95
+				weapon
+					"blast radius" 80
+					"shield damage" 800
+					"hull damage" 400
+					"hit force" 1200
+			outfits
+				"Sidewinder Missile Launcher" 2
+				"Sidewinder Missile" 136
+				"Sidewinder Missile Rack" 2
+				"Heavy Laser Turret" 2
+				"Heavy Anti-Missile Turret"
+				"NT-200 Nucleovoltaic"
+				"KP-6 Photovoltaic Panel" 2
+				"LP072a Battery Pack"
+				"D41-HY Shield Generator"
+				"Large Radar Jammer"
+				"Laser Rifle" 3
+				"X3700 Ion Thruster"
+				"X3200 Ion Steering"
+				"Hyperdrive"
+			crew 10
+			fuel 500
+			shields 5700
+			hull 1900
+			position 0 0
+			engine -10 91
+			engine 10 91
+			gun -13 -79 "Sidewinder Missile Launcher"
+			gun 13 -79 "Sidewinder Missile Launcher"
+			turret 0 0 "Heavy Anti-Missile Turret"
+			turret -17 14 "Heavy Laser Turret"
+			turret 17 14 "Heavy Laser Turret"
+			bay "Fighter" -42 -2
+			bay "Fighter" 42 2
+			leak "leak" 50 50
+			leak "flame" 50 80
+			leak "big leak" 90 30
+			explode "tiny explosion" 10
+			explode "small explosion" 25
+			explode "medium explosion" 25
+			explode "large explosion" 10
+			"final explode" "final explosion medium"
+			system Rutilicus
+			planet "New Boston"
+		ship Sparrow
+			name "Escort 1"
+			sprite ship/sparrow
+			thumbnail thumbnail/sparrow
+			attributes
+				category Interceptor
+				cost 225000
+				mass 50
+				bunks 2
+				"cargo space" 15
+				drag 0.9
+				"engine capacity" 40
+				"fuel capacity" 300
+				"gun ports" 2
+				"heat dissipation" 0.8
+				hull 300
+				"outfit space" 130
+				"required crew" 1
+				shields 1200
+				"weapon capacity" 20
+			outfits
+				"Beam Laser" 2
+				"Chipmunk Plasma Steering"
+				"Chipmunk Plasma Thruster"
+				"D14-RN Shield Generator"
+				Hyperdrive
+				"LP036a Battery Pack"
+				"nGVF-BB Fuel Cell"
+			crew 1
+			fuel 300
+			shields 1200
+			hull 300
+			position 0 0
+			engine -5 35
+				zoom 1
+				angle 0
+				under
+			engine 5 35
+				zoom 1
+				angle 0
+				under
+			gun -7 -10 "Beam Laser"
+				under
+			gun 7 -10 "Beam Laser"
+				under
+			leak flame 60 80
+			explode "small explosion" 5
+			explode "tiny explosion" 15
+			system Sol
+			planet Earth
+		ship Sparrow
+			name "Escort 2"
+			sprite ship/sparrow
+			thumbnail thumbnail/sparrow
+			attributes
+				category Interceptor
+				cost 225000
+				mass 50
+				bunks 2
+				"cargo space" 15
+				drag 0.9
+				"engine capacity" 40
+				"fuel capacity" 300
+				"gun ports" 2
+				"heat dissipation" 0.8
+				hull 300
+				"outfit space" 130
+				"required crew" 1
+				shields 1200
+				"weapon capacity" 20
+			outfits
+				"Beam Laser" 2
+				"Chipmunk Plasma Steering"
+				"Chipmunk Plasma Thruster"
+				"D14-RN Shield Generator"
+				Hyperdrive
+				"LP036a Battery Pack"
+				"nGVF-BB Fuel Cell"
+			crew 1
+			fuel 300
+			shields 1200
+			hull 300
+			position 0 0
+			engine -5 35
+				zoom 1
+				angle 0
+				under
+			engine 5 35
+				zoom 1
+				angle 0
+				under
+			gun -7 -10 "Beam Laser"
+				under
+			gun 7 -10 "Beam Laser"
+				under
+			leak flame 60 80
+			explode "small explosion" 5
+			explode "tiny explosion" 15
+			system Sol
+			planet Earth
+		visited Rutilicus
+		"visited planet" "New Boston"
+		visited Sol
+		"visited planet" "Earth"
+		visited Vega
+		visited Menkent
+		mission "Escort (Tiny, Core, Dangerous Destination)"
+			name "Escort to Hippocrates"
+			uuid 00000000-909a-d8da-727f-0000e0b19922
+			description "Escort the Adventurous Mare to Hippocrates in the Alnair system for 20,000 credits."
+			job
+			repeat 0
+			to offer
+				random < 40
+				"combat rating" < 6
+				or
+					"combat rating" > 0
+					"ships: Interceptor" != 0
+			destination Hippocrates
+			npc
+				uuid 50000000-0000-0000-0000-000000000000
+				government Pirate
+				personality
+					confusion 40
+					harvests
+					nemesis
+					plunders
+				ship Fury
+					name Hardsnake
+					plural Furies
+					sprite ship/fury
+					thumbnail thumbnail/fury
+					uuid f689b08c-afb7-4e77-b996-728c4bbeb4b2
+					attributes
+						category Interceptor
+						cost 490000
+						mass 70
+						bunks 3
+						"cargo space" 15
+						drag 1.6
+						"engine capacity" 60
+						"fuel capacity" 600
+						"gun ports" 4
+						"heat dissipation" 0.9
+						hull 400
+						"outfit space" 160
+						"required crew" 1
+						shields 2000
+						"weapon capacity" 40
+					outfits
+						"D14-RN Shield Generator"
+						"Energy Blaster" 4
+						Hyperdrive
+						"LP036a Battery Pack"
+						"Small Radar Jammer" 2
+						"X2200 Ion Steering"
+						"X2700 Ion Thruster"
+						"nGVF-CC Fuel Cell"
+					crew 3
+					fuel 600
+					shields 2000
+					hull 400
+					engine -11 35
+						zoom 0.8
+						angle 0
+						under
+					engine 11 35
+						zoom 0.8
+						angle 0
+						under
+					engine -18 37
+						zoom 0.6
+						angle 0
+						under
+					engine 18 37
+						zoom 0.6
+						angle 0
+						under
+					gun -10.5 -25.5 "Energy Blaster"
+						under
+					gun 10.5 -25.5 "Energy Blaster"
+						under
+					gun -17 -19.5 "Energy Blaster"
+						under
+					gun 17 -19.5 "Energy Blaster"
+						under
+					leak flame 50 80
+					explode "small explosion" 20
+					explode "tiny explosion" 10
+					system Alnair
+			npc
+				uuid 50000000-0000-0000-0000-000000000000
+				government Pirate
+				personality
+					confusion 40
+					harvests
+					nemesis
+					plunders
+					staying
+				ship Fury
+					name "Abaddon the Grotesque"
+					plural Furies
+					sprite ship/fury
+					thumbnail thumbnail/fury
+					uuid 1a96c20c-98de-4dbd-91cb-baae306d4291
+					attributes
+						category Interceptor
+						cost 490000
+						mass 70
+						bunks 3
+						"cargo space" 15
+						drag 1.6
+						"engine capacity" 60
+						"fuel capacity" 600
+						"gun ports" 4
+						"heat dissipation" 0.9
+						hull 400
+						"outfit space" 160
+						"required crew" 1
+						shields 2000
+						"weapon capacity" 40
+					outfits
+						"D14-RN Shield Generator"
+						"Energy Blaster" 4
+						Hyperdrive
+						"LP036a Battery Pack"
+						"Small Radar Jammer" 2
+						"X2200 Ion Steering"
+						"X2700 Ion Thruster"
+						"nGVF-CC Fuel Cell"
+					crew 2
+					fuel 600
+					shields 2000
+					hull 400
+					engine -11 35
+						zoom 0.8
+						angle 0
+						under
+					engine 11 35
+						zoom 0.8
+						angle 0
+						under
+					engine -18 37
+						zoom 0.6
+						angle 0
+						under
+					engine 18 37
+						zoom 0.6
+						angle 0
+						under
+					gun -10.5 -25.5 "Energy Blaster"
+						under
+					gun 10.5 -25.5 "Energy Blaster"
+						under
+					gun -17 -19.5 "Energy Blaster"
+						under
+					gun 17 -19.5 "Energy Blaster"
+						under
+					leak flame 50 80
+					explode "small explosion" 20
+					explode "tiny explosion" 10
+					system Alnair
+			npc
+				uuid 50000000-0000-0000-0000-000000000000
+				fail 128
+				accompany
+				government Merchant
+				personality
+					confusion 10
+					escort
+					timid
+				ship Shuttle
+					name "Adventurous Mare VIII"
+					sprite ship/shuttle
+						"frame rate" 15
+						delay 14
+						"random start frame"
+					thumbnail thumbnail/shuttle
+					uuid ec31f7b7-d375-4d4c-a69e-1446a24312e9
+					attributes
+						category Transport
+						cost 180000
+						mass 70
+						bunks 6
+						"cargo space" 20
+						drag 1.7
+						"engine capacity" 60
+						"fuel capacity" 400
+						"gun ports" 1
+						"heat dissipation" 0.8
+						hull 600
+						"outfit space" 120
+						"required crew" 1
+						shields 500
+						"weapon capacity" 10
+					outfits
+						"D14-RN Shield Generator"
+						Hyperdrive
+						"LP036a Battery Pack"
+						"X2200 Ion Steering"
+						"X2700 Ion Thruster"
+						"nGVF-AA Fuel Cell"
+					cargo
+						commodities
+							Equipment 2
+							Industrial 7
+							Plastic 11
+					crew 2
+					fuel 400
+					shields 500
+					hull 600
+					position 1969.6772 -1112.9518
+					engine -6 30
+						zoom 1
+						angle 0
+						under
+					engine 6 30
+						zoom 1
+						angle 0
+						under
+					gun 0 -31
+						under
+					leak leak 60 50
+					explode "small explosion" 5
+					explode "tiny explosion" 10
+					system Vega
+			on complete
+				dialog
+					"The captain of the Adventurous Mare VIII thanks you for escorting them safely, and pays you 20,000 credits."
+				payment 20000
+			on visit
+				dialog
+					"You have reached Hippocrates, but you left the Adventurous Mare VIII behind! Better depart and wait for them to arrive in this star system."
+
+
+
+test "Carryable flagships"
+	status active
+	description "Tests for flagships that can be carried in larger ships."
+	sequence
+		# Create/inject the savegame and load it.
+		inject "Fighters and Carriers and Escorts"
+		watchdog 50000
+		call "Load First Savegame"
+		call "Depart"
+		assert
+			"flagship crew" == 1
+		# Let every escort ship hold position
+		input
+			command hold
+		# Land again
+		# This part is not working yet...
+		#input
+		#	command land
+		#watchdog 12000
+		#label notLanded
+		#branch notLanded
+		#	not "flagship planet: New Boston"
+		#call "Depart"
+		assert
+			"flagship crew" == 1
+		# Board the carrier, by first selecting it and then giving the board command
+		input
+			command "nearest" "shift"
+		input
+			command "board" "shift"
+		watchdog 12000
+		label notDocked
+		branch notDocked
+			"flagship crew" < 2
+		assert
+			"flagship crew" == 12
+		# Cancel holding position for escorts
+		#input
+		#	command hold
+		# Land with the new flagship
+		#input
+		#	key "l"
+		#watchdog 12000
+		#label notLanded2
+		#branch notLanded2
+		#	not "flagship planet: New Boston"
+		#assert
+		#	"flagship crew" == 10
