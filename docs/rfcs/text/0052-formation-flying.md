@@ -270,6 +270,7 @@ Some alternatives that could result in a simpler, but also less expressive, spec
 - Only a single formation per type of ship.
 - Set formation information not centrally, but only on the following-ship.
 - Don't include the option to form formations around other things than lead-ships.
+- Instead of just category, we might also filter based on outfits (e.g. anti-missile equipped ships vs turret outfitted ships).
 
 
 
