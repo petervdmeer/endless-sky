@@ -3,11 +3,11 @@
 - RFC PR: https://github.com/EndlessSkyCommunity/endless-sky/pull/52
 - Relevant other RFCs: N/A
 - Relevant PRs/Issues:
-  - [ES-#302 Early feature request](https://github.com/endless-sky/endless-sky/issues/302)
-  - [ES-#4438 Initial Lines/Arcs Proposal](https://github.com/endless-sky/endless-sky/issues/4438)
-  - [ES-#4471 Lines/Arcs Implementation](https://github.com/endless-sky/endless-sky/pull/4471)
-  - [ES-#4606 Lines/Arcs Editor (rejected)](https://github.com/endless-sky/endless-sky/issues/4606)
-  - [ES-#6570 Pattern code and unit-tests](https://github.com/endless-sky/endless-sky/pull/6570)
+   - [ES-#302 Early feature request](https://github.com/endless-sky/endless-sky/issues/302)
+   - [ES-#4438 Initial Lines/Arcs Proposal](https://github.com/endless-sky/endless-sky/issues/4438)
+   - [ES-#4471 Lines/Arcs Implementation](https://github.com/endless-sky/endless-sky/pull/4471)
+   - [ES-#4606 Lines/Arcs Editor (rejected)](https://github.com/endless-sky/endless-sky/issues/4606)
+   - [ES-#6570 Pattern code and unit-tests](https://github.com/endless-sky/endless-sky/pull/6570)
 
 
 # Summary
@@ -39,6 +39,7 @@ formation <name>:
 	flippable [x] [y]
 	rotatable <angle#>
 	position [polar] [diameter|width|height] <x#> <y#>
+		category <category1> [<category2> ... ]
 	line
 		start [polar] [diameter|width|height] <x#> <y#>
 		end [polar] [diameter|width|height] <x#> <y#>
@@ -51,6 +52,7 @@ formation <name>:
 			"positions delta" <nr#>
 				regulated
 			alternating
+		category <category1> [<category2> ... ]
 	arc
 		anchor [polar] [diameter|width|height] <x#> <y#>
 		start [polar] [diameter|width|height] <x#> <y#>
@@ -65,6 +67,7 @@ formation <name>:
 			"positions delta" <nr#>
 				regulated
 			alternating
+		category <category1> [<category2> ... ]
 ```
 
 Meaning of the keywords:
@@ -83,6 +86,7 @@ Meaning of the keywords:
    - If the keyword `diameter` is given, then this coordinate is not in pixels, but in diameters of the largest ship in the formation.
    - If the keyword `width` is given, then this coordinate is not in pixels, but in widths of the largest ship in the formation.
    - If the keyword `height` is given, then this coordinate is not in pixels, but in heights of the largest ship in the formation.
+- `category`: If a category keyword is given on a position, line or arc, then only ships of the categories listed will be placed on the formation positions specified by the position, line or arc.
 - `line`: Begins a line.
    - `start [polar] [diameter|width|height] <x#> <y#>` The location where to start a line within a formation. (The default value is x=0 and y=0.)
       - x and y give the coordinate in carthesian coordinates in pixels.
