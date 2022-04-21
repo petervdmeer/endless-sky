@@ -40,6 +40,8 @@ formation <name>:
 	rotatable <angle#>
 	position [polar] [diameter|width|height] <x#> <y#>
 		category <category1> [<category2> ... ]
+		filter
+			<...>
 	line
 		start [polar] [diameter|width|height] <x#> <y#>
 		end [polar] [diameter|width|height] <x#> <y#>
@@ -53,6 +55,8 @@ formation <name>:
 				regulated
 			alternating
 		category <category1> [<category2> ... ]
+		filter
+			<...>
 	arc
 		anchor [polar] [diameter|width|height] <x#> <y#>
 		start [polar] [diameter|width|height] <x#> <y#>
@@ -68,6 +72,8 @@ formation <name>:
 				regulated
 			alternating
 		category <category1> [<category2> ... ]
+		filter
+			<...>
 ```
 
 Meaning of the keywords:
@@ -86,7 +92,8 @@ Meaning of the keywords:
    - If the keyword `diameter` is given, then this coordinate is not in pixels, but in diameters of the largest ship in the formation.
    - If the keyword `width` is given, then this coordinate is not in pixels, but in widths of the largest ship in the formation.
    - If the keyword `height` is given, then this coordinate is not in pixels, but in heights of the largest ship in the formation.
-- `category`: If a category keyword is given on a position, line or arc, then only ships of the categories listed will be placed on the formation positions specified by the position, line or arc.
+- `category`: If a category keyword is given on a position, line or arc, then only ships of the categories listed will be placed on the formation positions that are described by the position, line or arc.
+- `filter`: If a filter keyword is given on a position, line or arc, then only ships that match the filter will be placed on the formation positions that are described by the position, line or arc.
 - `line`: Begins a line.
    - `start [polar] [diameter|width|height] <x#> <y#>` The location where to start a line within a formation. (The default value is x=0 and y=0.)
       - x and y give the coordinate in carthesian coordinates in pixels.
@@ -270,13 +277,11 @@ Some alternatives that could result in a simpler, but also less expressive, spec
 - Only a single formation per type of ship.
 - Set formation information not centrally, but only on the following-ship.
 - Don't include the option to form formations around other things than lead-ships.
-- Instead of just category, we might also filter based on outfits (e.g. anti-missile equipped ships vs turret outfitted ships).
 
 
 
 # Unresolved Questions
 - Overlap between positions in different (overlapping) formations; the most basic formation code would just place multiple ships on a single position.
-- Multiple categories/typs of ships in a single formation; the `instance` and `ring` keywords are expected to solve situations where different ships need to be placed at different locations in a formation (by just creating 2 instances of the same formation and assigning different ships and rings to each).
 - Exact specifications of which ships should move to which positions (for example based on a location filter per position/line/arc). It still is possible to assign specific ships to specific positions by creating different formations for each specific type of ships, but that seems less power-full than using location-filters.
 - Behaviors for when to break formations (through ship personalities or otherwise) are not in this specification/RFC. This is a topic that deserves its own separate specification/RFC.
 - The actual UI elements for players to assign ships to formations is not in this specification/RFC. In scope is that is should be possible to create such UI elements, but the actual UI is not in this specification/RFC.
