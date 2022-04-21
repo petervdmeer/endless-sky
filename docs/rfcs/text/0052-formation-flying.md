@@ -1,8 +1,13 @@
 - Feature Name: Formation Flying
 - Affected audience: Game Developers, Content Creators, Plugin Authors, Players
 - RFC PR: https://github.com/EndlessSkyCommunity/endless-sky/pull/52
-- Relevant Issues/RFCs: [ES-#302 Early feature request](https://github.com/endless-sky/endless-sky/issues/302), [ES-#4438 Initial Lines/Arcs Proposal](https://github.com/endless-sky/endless-sky/issues/4438), [ES-#4471 Lines/Arcs Implementation](https://github.com/endless-sky/endless-sky/pull/4471), [ES-#4606 Lines/Arcs Editor (rejected)](https://github.com/endless-sky/endless-sky/issues/4606)
-
+- Relevant other RFCs: N/A
+- Relevant PRs/Issues:
+  - [ES-#302 Early feature request](https://github.com/endless-sky/endless-sky/issues/302)
+  - [ES-#4438 Initial Lines/Arcs Proposal](https://github.com/endless-sky/endless-sky/issues/4438)
+  - [ES-#4471 Lines/Arcs Implementation](https://github.com/endless-sky/endless-sky/pull/4471)
+  - [ES-#4606 Lines/Arcs Editor (rejected)](https://github.com/endless-sky/endless-sky/issues/4606)
+  - [ES-#6570 Pattern code and unit-tests](https://github.com/endless-sky/endless-sky/pull/6570)
 
 
 # Summary
@@ -33,37 +38,33 @@ The basic structure of a definition of a formation in the data-files would look 
 formation <name>:
 	flippable [x] [y]
 	rotatable <angle#>
-	point [polar] [diameter|width|height] <x#> <y#>
+	position [polar] [diameter|width|height] <x#> <y#>
 	line
 		start [polar] [diameter|width|height] <x#> <y#>
 		end [polar] [diameter|width|height] <x#> <y#>
-		slots <nr#>
-		skip [first] [last]
+		positions <nr#>
+			skip [first] [last]
 		centered
 		repeat
 			start [polar] [diameter|width|height] <x#> <y#>
 			end [polar] [diameter|width|height] <x#> <y#>
-			slots <nr#>
+			"positions delta" <nr#>
 				regulated
 			alternating
-		...
-	...
 	arc
 		anchor [polar] [diameter|width|height] <x#> <y#>
 		start [polar] [diameter|width|height] <x#> <y#>
 		angle [<angle#>]
-		slots <nr#>
-		skip [first] [last]
+		positions <nr#>
+			skip [first] [last]
 		centered
 		repeat
 			anchor [polar] [diameter|width|height] <x#> <y#>
 			start [polar] [diameter|width|height] <x#> <y#>
 			angle [<angle#>]
-			slots <nr#>
+			"positions delta" <nr#>
 				regulated
 			alternating
-		...
-	...
 ```
 
 Meaning of the keywords:
@@ -77,7 +78,7 @@ Meaning of the keywords:
    - Example: A delta (triangluar) formation around the lead-ship would have a 120 degrees rotational symmetry and be set to 120 degrees rotatable. It can turn 120 degrees and still have roughly the same shape as when turning 0 degrees.
    - Example: A delta-tailing (triangle behind the flagship) formation should however only be considered `transverse` symmetric, since most players would like the tailing formations to only be behind them.
    - Example: A formation that "writes text by forming letters and words" could be rotatable for 1 degree or less, basically causing the heading/velocity of the lead ship to be ignored and ships just staying in the "text positions".
-- `point`: Specifies a single slot in a formation. One ship in the formation pattern can occupy this point.
+- `position`: Specifies a single position in a formation. One ship in the formation pattern can occupy this position.
    - If the keyword `polar` is given, then this coordinate is given as polar coordinate with x being the angle (0 to 360 degrees) and y being a distance.
    - If the keyword `diameter` is given, then this coordinate is not in pixels, but in diameters of the largest ship in the formation.
    - If the keyword `width` is given, then this coordinate is not in pixels, but in widths of the largest ship in the formation.
@@ -94,19 +95,20 @@ Meaning of the keywords:
       - If the start keyword is given multiple times, then the values will be added.
          - This can be usefull if the coordinates should be calculated partially based on pixels and partially on ship sizes.
          - This can also be usefull if the x-coordinates should depend on ships-width and y-coordinates on ships-height.
-   - `end [polar] [diameter|width|height] <x#> <y#>` The location where to end a line. (Default is the start location, resulting in only 1 slot on the line.)
+   - `end [polar] [diameter|width|height] <x#> <y#>` The location where to end a line. (Default is the start location, resulting in a line that describes only a single position.)
       - For lines this is relative to the center of the formation.
          - For repeat lines this coordinate is relative to the previous end coordinate.
       - The keywords `polar`, `diameter`, `width` and `height` work the same as for the `start` keyword.
       - Giving this keyword multiple times works the same as for the start keyword.
-   - `slots <nr#>`: The amount of slots on a line. (Default is 1, meaning that the line is just a single point on the start location.)
-      - Or the amount of slots to increase/decrease on each growth step when given in a line repeat section.
-      - Ships/slots are distributed evenly over the line between the start and the end coordiate.
-      - The keyword `regulated` indicates that the slots increase will only happen when the resulting space between ships is at least the same amount as on the original line.
-   - `skip [first] [last]` Indicates if the first and/or last slot in the line needs to be skipped.
+   - `positions <nr#>`: The amount of positions on a line. (Default is 1, meaning that the line is just a single position on the start location.)
+      - Or the amount of positions to increase/decrease on each growth step when given in a line repeat section.
+      - Ships/positions are distributed evenly over the line between the start and the end coordiate.
+      - The keyword `regulated` indicates that the increase in positions will only happen when the resulting space between ships is at least the same amount as on the original line.
+   - `skip [first] [last]` Indicates if the first and/or last position in the line needs to be skipped.
    - `centered` Indicates that the line grows from the center instead of the start position.
    - `repeat`: Section for repeating a line when the formation needs to grow.
       - Repeat lines that reach a size of 0 will not repeat further.
+      - The `"positions delta"` keyword gives the amount of positions to increase/decrease on each a repeat that is done.
       - The keyword `alternating` indicates that every 1st, 3rd, and every other uneven repeating line will fill from end to start instead of from start to end.
          - The alternating keyword can be combined with centered and will still be relevant for some regular formations when ships move to earlier positions.
       - A single line can have multiple repeat sections.
@@ -119,7 +121,7 @@ Meaning of the keywords:
         - For repeat arcs the newly calculated coordinate is relative to the repeat anchor location.
       - Giving this keyword multiple times works the same as for the start keyword for lines.
    - `angle [<angle#>]` Gives the partial (or full) angle at which to stop the arc. (range is -360 to 360)
-      - Default is zero, meaning that the arc statement describes only a single point.
+      - Default is zero, meaning that the arc statement describes only a single position.
       - The arc is clockwise if the number is in the range between 0 and 360.
       - The arc is counter-clockwise if the number is in the range between -360 and 0.
       - For repeat arcs, if an angle is given then this gives the delta for the end-angle at which to stop.
@@ -127,15 +129,16 @@ Meaning of the keywords:
       - If given in a repeat section, then this gives the delta to apply to the anchor compared to the previous arc.
       - Defaults to 0,0 if not given, except for repeat sections where the default is applying the original anchor again.
       - Giving this keyword multiple times works the same as for the start keyword for lines.
-   - `slots <nr#>`: The amount of slots on an arc. (Default is 1, meaning that the arc is a single point at the start location.)
-      - Or the amount of slots to increase/decrease on each growth step when given in an arc repeat section.
-      - Ships/slots are distributed evenly over the arc between the start and the end coordiate.
-      - The keyword `regulated` indicates that the slots increase will only happen when the resulting space between ships is at least the same amount as on the original line.
-   - `skip [first] [last]` Indicates if the first and/or last slot in the arc needs to be skipped.
+   - `positions <nr#>`: The amount of positions on an arc. (Default is 1, meaning that the arc is a single position at the start location.)
+
+      - Ships/positions are distributed evenly over the arc between the start and the end coordiate.
+      - The keyword `regulated` that the increase in positions will only happen when the resulting space between ships is at least the same amount as on the original arc.
+   - `skip [first] [last]` Indicates if the first and/or last position in the arc needs to be skipped.
    - `centered` Indicates that the arc grows from the center instead of the start position.
    - `repeat`: Section for repeating an arc when the formation needs to grow.
       - Repeat arcs that reach a size of 0 will not repeat further.
-      - The keyword 'alternating' indicates that every uneven repeating arc will fill from end to start instead of from start to end, similar to this keyword on lines.
+      - The keyword `alternating` indicates that every 1st, 3rd, and every other uneven repeating arc will fill from end to start instead of from start to end, similar to how this keyword is used on lines.
+      - The `"positions delta"` keyword gives the amount of positions to increase/decrease on each a repeat that is done.
       - A single arc can have multiple repeat sections.
 
 
@@ -269,7 +272,7 @@ Some alternatives that could result in a simpler, but also less expressive, spec
 # Unresolved Questions
 - Overlap between positions in different (overlapping) formations; the most basic formation code would just place multiple ships on a single position.
 - Multiple categories/typs of ships in a single formation; the `instance` and `ring` keywords are expected to solve situations where different ships need to be placed at different locations in a formation (by just creating 2 instances of the same formation and assigning different ships and rings to each).
-- Exact specifications of which ships should move to which positions (for example based on a location filter per point/line/arc). It still is possible to assign specific ships to specific positions by creating different formations for each specific type of ships, but that seems less power-full than using location-filters.
+- Exact specifications of which ships should move to which positions (for example based on a location filter per position/line/arc). It still is possible to assign specific ships to specific positions by creating different formations for each specific type of ships, but that seems less power-full than using location-filters.
 - Behaviors for when to break formations (through ship personalities or otherwise) are not in this specification/RFC. This is a topic that deserves its own separate specification/RFC.
 - The actual UI elements for players to assign ships to formations is not in this specification/RFC. In scope is that is should be possible to create such UI elements, but the actual UI is not in this specification/RFC.
 - An in-game (or out-of-game) graphical formations editor is not described in this specification/RFC.
