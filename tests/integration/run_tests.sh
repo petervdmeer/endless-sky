@@ -37,16 +37,34 @@ function detect_retryable_issues () {
 
 
 
+# Helper function that gets a list of runnable tests from a resources directory.
+# $1 Executable to test
+# $2 Resources location
+function get_available_tests () {
+  local EXEC="$1"
+  local RES="$2"
+
+  $("${ES_EXEC_PATH}" --tests --resources "${RESOURCES}" --config "${ES_CONFIG_TEMPLATE_PATH}")
+}
+
+
+
 # Helper function that executes a single test-run.
 # Parameters:
-# $1 Test(name)
+# $1 Executable to test
+# $2 Resources location
+# $3 Configuration directory location
+# $4 Test(name)
 # Return values:
 # 0 = success
 # 1 = failure
 # 2 = fatal failure (should terminate all testing)
 # 3 = recoverable failure (could retry)
 function run_single_testrun () {
-  local TEST="$1"
+  local EXEC="$1"
+  local RES="$2"
+  local ES_CONFIG_TEMPLATE_PATH="$3"
+  local TEST="$4"
 
   # Setup environment for the test
   local ES_CONFIG_PATH=$(mktemp --directory)
@@ -66,7 +84,7 @@ function run_single_testrun () {
   local RETURN=0
   echo "# Running test \"${TEST_NAME}\":"
   # Use sed to remove ALSA messages that appear due to missing soundcards in the CI environment
-  if ! "$ES_EXEC_PATH" --resources "${RESOURCES}" --test "${TEST_NAME}" --config "${ES_CONFIG_PATH}" 2>&1 |\
+  if ! "$EXEC" --resources "${RES}" --test "${TEST_NAME}" --config "${ES_CONFIG_PATH}" 2>&1 |\
     sed -e "/^ALSA lib.*$/d" -e "/^AL lib.*$/d" | sed "s/^/#     /"
   then
     echo "# Test \"${TEST_NAME}\" failed!"
@@ -104,7 +122,7 @@ function run_test () {
     then
       echo "# Retrying test due to recoverable environment failure"
     fi
-    run_single_testrun "${TEST}"
+    run_single_testrun "${ES_EXEC_PATH}" "${RESOURCES}" "${TEST}"
     TEST_RESULT=$?
   done
   return ${TEST_RESULT}
@@ -124,6 +142,7 @@ fi
 # Determine paths to endless-sky executable and other relevant data
 ES_EXEC_PATH="$1"
 RESOURCES="$2"
+EXTRA_TESTRES="$3"
 ES_CONFIG_TEMPLATE_PATH="${RESOURCES}/tests/integration/config"
 
 echo "TAP version 13"
@@ -150,9 +169,23 @@ fi
 # Set separator to newline (in case tests have spaces in their name)
 IFS=$'\n'
 
-TESTS=$("${ES_EXEC_PATH}" --tests --resources "${RESOURCES}" --config "${ES_CONFIG_TEMPLATE_PATH}")
+TESTS=$(get_available_tests "${ES_EXEC_PATH}" "${RESOURCES}" "${ES_CONFIG_TEMPLATE_PATH}")
 TESTS_OK=($(echo "${TESTS}" | grep -e "^active" | cut -f2)) || true
 TESTS_NOK=($(echo "${TESTS}" | grep -e "^known failure" -e "^missing feature" | cut -f2)) || true
+
+TESTS_EXTRA=""
+
+if [ -d "${EXTRA_TESTRES}" ]
+then
+	for EXTRA_RES in $(ls -1 "${EXTRA_TESTRES}")
+	do
+	
+		TESTS_EXTRA = "${TESTS_EXTRA}
+		"${ES_EXEC_PATH}" --tests --resources ${EXTRA_RES}"
+	done
+fi
+
+
 NUM_TOTAL=${#TESTS_OK[@]}
 
 #TODO: Allow running known-failures by default as well (to check if they accidentally got solved)
